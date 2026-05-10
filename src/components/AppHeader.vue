@@ -1,10 +1,19 @@
 <template>
   <header class="relative text-center pt-12 pb-8 px-4">
 
-    <RouterLink
-      to="/favorites"
-      class="absolute top-4 left-4 font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 rounded-[1px] text-parchment/50 transition-all duration-200 hover:border-gold hover:text-gold"
-    >♥ Favorites<span v-if="favCount" class="ml-1 text-crimson-light">{{ favCount }}</span></RouterLink>
+    <div class="absolute top-4 left-4 flex items-center gap-2">
+      <RouterLink
+        to="/favorites"
+        class="font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 rounded-[1px] text-parchment/50 transition-all duration-200 hover:border-gold hover:text-gold"
+      >♥ Favorites<span v-if="favCount" class="ml-1 text-crimson-light">{{ favCount }}</span></RouterLink>
+      <a
+        :href="translateUrl"
+        target="_blank"
+        rel="noopener"
+        title="Translate this page to Brazilian Portuguese"
+        class="font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 rounded-[1px] text-parchment/50 transition-all duration-200 hover:border-gold hover:text-gold"
+      >⇄ PT-BR</a>
+    </div>
 
     <button
       @click="toggleTheme"
@@ -37,11 +46,17 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useFavorites } from '../composables/useFavorites.js'
 
 const isLight = ref(false)
+const route = useRoute()
 const { favorites } = useFavorites()
 const favCount = computed(() => favorites.value.length || null)
+const translateUrl = computed(() => {
+  const url = `${window.location.origin}${route.fullPath}`
+  return `https://translate.google.com/translate?sl=en&tl=pt-BR&u=${encodeURIComponent(url)}`
+})
 
 onMounted(() => {
   isLight.value = localStorage.getItem('theme') === 'light'
