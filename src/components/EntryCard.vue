@@ -2,25 +2,27 @@
   <div class="animate-fade-in bg-[linear-gradient(160deg,var(--color-surface),var(--color-surface-alt))] border border-gold/30 rounded-sm overflow-hidden transition-[border-color,box-shadow] duration-300 hover:border-gold/70 hover:shadow-[0_4px_30px_rgba(184,134,11,0.1)]">
 
     <!-- Header -->
-    <div class="px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-gold/8 to-transparent border-b border-gold/20 flex items-center gap-3 flex-wrap">
-      <div class="font-cinzel text-base sm:text-[1.2rem] text-gold-bright font-semibold flex-1 min-w-0">{{ entry.name }}</div>
-      <div class="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase py-[0.2rem] px-[0.7rem] border border-crimson text-crimson-light rounded-[1px] shrink-0">{{ entry.category }}</div>
-      <button
-        @click="toggleFavorite(entry)"
-        :title="isFavorite(entry) ? 'Remove from favorites' : 'Add to favorites'"
-        class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border rounded-[1px] bg-transparent cursor-pointer transition-all duration-200 shrink-0"
-        :class="isFavorite(entry) ? 'border-crimson/60 text-crimson-light hover:border-crimson' : 'border-gold/40 text-parchment/50 hover:border-gold hover:text-gold'"
-      >{{ isFavorite(entry) ? '♥ Saved' : '♡ Save' }}</button>
-<button
-        @click="copyForLLM"
-        title="Copy prompt for AI analysis in Portuguese"
-        class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
-      >{{ copiedLLM ? '✓ Copied' : '✦ Ask AI' }}</button>
-      <button
-        @click="copyLink"
-        :title="copied ? 'Copied!' : 'Copy shareable link'"
-        class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
-      >{{ copied ? '✓ Copied' : '⇥ Share' }}</button>
+    <div class="px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-gold/8 to-transparent border-b border-gold/20 flex flex-col gap-2">
+      <div class="font-cinzel text-base sm:text-[1.2rem] text-gold-bright font-semibold">{{ entry.name }}</div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <div class="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase py-[0.2rem] px-[0.7rem] border border-crimson text-crimson-light rounded-[1px] shrink-0">{{ entry.category }}</div>
+        <button
+          @click="toggleFavorite(entry)"
+          :title="isFavorite(entry) ? 'Remove from favorites' : 'Add to favorites'"
+          class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border rounded-[1px] bg-transparent cursor-pointer transition-all duration-200 shrink-0"
+          :class="isFavorite(entry) ? 'border-crimson/60 text-crimson-light hover:border-crimson' : 'border-gold/40 text-parchment/50 hover:border-gold hover:text-gold'"
+        >{{ isFavorite(entry) ? '♥ Saved' : '♡ Save' }}</button>
+        <button
+          @click="copyForLLM"
+          title="Copy prompt for AI analysis in Portuguese"
+          class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
+        >{{ copiedLLM ? '✓ Copied' : '✦ Ask AI' }}</button>
+        <button
+          @click="copyLink"
+          :title="copied ? 'Copied!' : 'Copy shareable link'"
+          class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
+        >{{ copied ? '✓ Copied' : '⇥ Share' }}</button>
+      </div>
     </div>
 
     <!-- Stats table (full-width) -->
