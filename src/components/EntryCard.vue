@@ -12,8 +12,13 @@
       >{{ copied ? '✓ Copied' : '🔗 Share' }}</button>
     </div>
 
-    <!-- Two-column body -->
-    <div class="grid grid-cols-2 max-sm:grid-cols-1">
+    <!-- Stats table (full-width) -->
+    <div v-if="statRows.length" class="px-4 sm:px-6 pt-4 pb-1">
+      <StatsTable :rows="statRows" />
+    </div>
+
+    <!-- Description comparison (two columns) -->
+    <div class="grid grid-cols-2 max-sm:grid-cols-1" :class="statRows.length ? 'border-t border-gold/10' : ''">
 
       <!-- 2014 Edition -->
       <div class="py-4 px-4 sm:py-5 sm:px-6 border-r border-gold/15 max-sm:border-r-0 max-sm:border-b max-sm:border-gold/15">
@@ -22,9 +27,6 @@
           2014 Edition
         </div>
         <template v-if="entry.v2014">
-          <SpellStats v-if="entry.category === 'Spell'" :spell="entry.v2014" />
-          <CreatureStats v-else-if="entry.category === 'Creature'" :creature="entry.v2014" />
-          <RaceStats v-else-if="entry.category === 'Race'" :race="entry.v2014" />
           <WordDiff v-if="entry.v2024" :textA="entry.v2014.desc" :textB="entry.v2024.desc" side="a" />
           <p v-else class="text-parchment/80 text-base leading-[1.8] italic">{{ truncate(entry.v2014.desc, 400) }}</p>
         </template>
@@ -38,9 +40,6 @@
           2024 Edition
         </div>
         <template v-if="entry.v2024">
-          <SpellStats v-if="entry.category === 'Spell'" :spell="entry.v2024" :compare="entry.v2014" />
-          <CreatureStats v-else-if="entry.category === 'Creature'" :creature="entry.v2024" :compare="entry.v2014" />
-          <RaceStats v-else-if="entry.category === 'Race'" :race="entry.v2024" :compare="entry.v2014" />
           <WordDiff v-if="entry.v2014" :textA="entry.v2014.desc" :textB="entry.v2024.desc" side="b" />
           <p v-else class="text-parchment/80 text-base leading-[1.8] italic">{{ truncate(entry.v2024.desc, 400) }}</p>
         </template>
@@ -63,11 +62,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import WordDiff from './WordDiff.vue'
-import SpellStats from './SpellStats.vue'
-import CreatureStats from './CreatureStats.vue'
-import RaceStats from './RaceStats.vue'
+import StatsTable from './StatsTable.vue'
+import { spellLevel, schoolName, speciesSize, speciesSpeed } from '../composables/useOpen5e.js'
 
 const props = defineProps({ entry: Object })
 const copied = ref(false)
@@ -79,4 +77,43 @@ function copyLink() {
   copied.value = true
   setTimeout(() => copied.value = false, 2000)
 }
+
+function typeName(t) { return (typeof t === 'string' ? t : t?.name) || '—' }
+function sizeName(s) { return (typeof s === 'string' ? s : s?.name) || '—' }
+function hpString(c) { return c?.hit_points ? `${c.hit_points} (${c.hit_dice})` : '—' }
+
+const statRows = computed(() => {
+  const { category, v2014: a, v2024: b } = props.entry
+  let rows = []
+  if (category === 'Spell') {
+    rows = [
+      { label: 'Level',     v14: spellLevel(a),              v24: spellLevel(b) },
+      { label: 'School',    v14: schoolName(a?.school),      v24: schoolName(b?.school) },
+      { label: 'Cast Time', v14: a?.casting_time,            v24: b?.casting_time },
+      { label: 'Range',     v14: a?.range,                   v24: b?.range },
+      { label: 'Duration',  v14: a?.duration,                v24: b?.duration },
+    ]
+  } else if (category === 'Creature') {
+    rows = [
+      { label: 'CR',   v14: a?.challenge_rating_text,                     v24: b?.challenge_rating_text },
+      { label: 'Type', v14: typeName(a?.type),                             v24: typeName(b?.type) },
+      { label: 'Size', v14: sizeName(a?.size),                             v24: sizeName(b?.size) },
+      { label: 'HP',   v14: hpString(a),                                   v24: hpString(b) },
+      { label: 'AC',   v14: a?.armor_class ? String(a.armor_class) : null, v24: b?.armor_class ? String(b.armor_class) : null },
+    ]
+  } else if (category === 'Race') {
+    rows = [
+      { label: 'Size',  v14: speciesSize(a?.traits),  v24: speciesSize(b?.traits) },
+      { label: 'Speed', v14: speciesSpeed(a?.traits), v24: speciesSpeed(b?.traits) },
+    ]
+  }
+  return rows
+    .map(r => ({
+      label:   r.label,
+      v14:     r.v14 || '—',
+      v24:     r.v24 || '—',
+      changed: !!(a && b) && (r.v14 || '—') !== (r.v24 || '—'),
+    }))
+    .filter(r => r.v14 !== '—' || r.v24 !== '—')
+})
 </script>
