@@ -3,5 +3,6 @@
     Tome of Changes · Data via Open5e API · Created by
     <a href="https://matheusdmm.dev" target="_blank" rel="noopener" class="hover:text-gold transition-colors duration-200">Matheus</a>
     · <a href="https://github.com/matheusdmm/Tome-of-Changes" target="_blank" rel="noopener" class="hover:text-gold transition-colors duration-200">GitHub</a>
+    · <a href="https://heroscribe.vercel.app/" target="_blank" rel="noopener" class="hover:text-gold transition-colors duration-200">HeroScribe — Sheet Builder</a>
   </footer>
 </template>
