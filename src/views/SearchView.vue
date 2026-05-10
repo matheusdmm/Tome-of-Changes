@@ -23,11 +23,12 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import SearchBar from '../components/SearchBar.vue'
 import EntryCard from '../components/EntryCard.vue'
 import { searchEntries } from '../composables/useOpen5e.js'
+import { usePageMeta } from '../composables/usePageMeta.js'
 
 const route  = useRoute()
 const router = useRouter()
@@ -37,6 +38,20 @@ const category = ref(route.params.category || 'Spell')
 const results  = ref([])
 const loading  = ref(false)
 const error    = ref(null)
+
+const metaTitle = computed(() =>
+  results.value.length
+    ? `${results.value[0].name} — ${category.value} | Tome of Changes`
+    : query.value
+      ? `${query.value} — ${category.value} | Tome of Changes`
+      : 'Tome of Changes — D&D 5e 2014 vs 2024'
+)
+const metaDesc = computed(() =>
+  results.value.length
+    ? `Compare ${results.value[0].name} between D&D 5e 2014 and 2024. See exactly what changed — word-level diffs, stat table, and detected changes.`
+    : 'Compare D&D 5e spells, feats, creatures, conditions, magic items, and species between the 2014 and 2024 editions.'
+)
+usePageMeta(metaTitle, metaDesc)
 
 async function doSearch() {
   const q = query.value.trim()

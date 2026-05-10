@@ -14,6 +14,12 @@ import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import FactCard from '../components/FactCard.vue'
 import SearchBar from '../components/SearchBar.vue'
+import { usePageMeta } from '../composables/usePageMeta.js'
+
+usePageMeta(
+  'Tome of Changes — D&D 5e 2014 vs 2024',
+  'Compare D&D 5e spells, feats, creatures, conditions, magic items, and species between the 2014 and 2024 editions. Word-level diffs, stat comparisons, and instant search.',
+)
 
 const router   = useRouter()
 const query    = ref('')

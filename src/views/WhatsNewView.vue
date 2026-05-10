@@ -63,6 +63,13 @@
 </template>
 
 <script setup>
+import { usePageMeta } from '../composables/usePageMeta.js'
+
+usePageMeta(
+  'What Changed in D&D 2024? | Tome of Changes',
+  'A complete guide to what changed between D&D 5e 2014 and the 2024 Player\'s Handbook — species, backgrounds, weapon mastery, spells, feats, exhaustion, and more.',
+)
+
 const sections = [
   {
     title: 'Races → Species',

@@ -19,6 +19,12 @@
 <script setup>
 import EntryCard from '../components/EntryCard.vue'
 import { useFavorites } from '../composables/useFavorites.js'
+import { usePageMeta } from '../composables/usePageMeta.js'
+
+usePageMeta(
+  'Favorites | Tome of Changes',
+  'Your saved D&D 5e edition comparisons — spells, feats, creatures, and more, bookmarked for quick reference.',
+)
 
 const { favorites } = useFavorites()
 </script>
