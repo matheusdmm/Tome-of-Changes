@@ -4,9 +4,11 @@
     <RouterView />
     <AppFooter />
   </div>
+  <Analytics />
 </template>
 
 <script setup>
+import { Analytics } from '@vercel/analytics/vue'
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
 </script>

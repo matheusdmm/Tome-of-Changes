@@ -29,6 +29,7 @@ import SearchBar from '../components/SearchBar.vue'
 import EntryCard from '../components/EntryCard.vue'
 import { searchEntries } from '../composables/useOpen5e.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
+import { track } from '@vercel/analytics'
 
 const route  = useRoute()
 const router = useRouter()
@@ -59,6 +60,7 @@ async function doSearch() {
   loading.value = true; error.value = null
   try {
     results.value = await searchEntries(category.value, q)
+    track('search', { category: category.value, results: results.value.length })
   } catch {
     error.value = 'Could not reach Open5e API.'
     results.value = []

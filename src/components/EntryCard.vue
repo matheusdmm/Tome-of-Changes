@@ -74,6 +74,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { track } from '@vercel/analytics'
 import WordDiff from './WordDiff.vue'
 import StatsTable from './StatsTable.vue'
 import { spellLevel, schoolName, speciesSize, speciesSpeed } from '../composables/useOpen5e.js'
@@ -82,12 +83,19 @@ import { useFavorites } from '../composables/useFavorites.js'
 const props = defineProps({ entry: Object })
 const copied = ref(false)
 const copiedLLM = ref(false)
-const { isFavorite, toggleFavorite } = useFavorites()
+const { isFavorite, toggleFavorite: _toggleFavorite } = useFavorites()
+
+function toggleFavorite(entry) {
+  const adding = !isFavorite(entry)
+  _toggleFavorite(entry)
+  track('favorite', { category: entry.category, name: entry.name, action: adding ? 'add' : 'remove' })
+}
 
 function truncate(t, max) { return t && t.length > max ? t.slice(0, max) + '…' : (t || '') }
 
 function copyLink() {
   navigator.clipboard.writeText(`${window.location.origin}/compare/${props.entry.category}/${props.entry.name}`)
+  track('share', { category: props.entry.category, name: props.entry.name })
   copied.value = true
   setTimeout(() => copied.value = false, 2000)
 }
@@ -138,6 +146,7 @@ function buildLLMPrompt() {
 
 function copyForLLM() {
   navigator.clipboard.writeText(buildLLMPrompt())
+  track('ask-ai', { category: props.entry.category, name: props.entry.name })
   copiedLLM.value = true
   setTimeout(() => copiedLLM.value = false, 2000)
 }
