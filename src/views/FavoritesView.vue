@@ -9,7 +9,7 @@
     </div>
 
     <div class="text-center py-16 px-8 text-parchment/30" v-else>
-      <div class="text-5xl mb-4 opacity-40">♡</div>
+      <div class="font-cinzel text-3xl mb-4 opacity-20">♡</div>
       <div class="font-cinzel text-[0.85rem] tracking-[0.1em]">No favorites saved yet</div>
       <div class="font-cinzel text-[0.65rem] tracking-[0.1em] mt-2 opacity-60">Search for entries and hit ♡ Save to add them here</div>
     </div>

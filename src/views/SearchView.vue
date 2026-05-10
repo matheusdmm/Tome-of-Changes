@@ -16,7 +16,7 @@
     </div>
 
     <div class="text-center py-16 px-8 text-parchment/30" v-if="!loading && !error && results.length === 0">
-      <div class="text-5xl mb-4 opacity-40">📜</div>
+      <div class="font-cinzel text-3xl mb-4 opacity-20">✦</div>
       <div class="font-cinzel text-[0.85rem] tracking-[0.1em]">No entries found in the tome</div>
     </div>
   </div>

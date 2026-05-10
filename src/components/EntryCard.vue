@@ -20,7 +20,7 @@
         @click="copyLink"
         :title="copied ? 'Copied!' : 'Copy shareable link'"
         class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
-      >{{ copied ? '✓ Copied' : '🔗 Share' }}</button>
+      >{{ copied ? '✓ Copied' : '⇥ Share' }}</button>
     </div>
 
     <!-- Stats table (full-width) -->

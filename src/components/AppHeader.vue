@@ -6,6 +6,10 @@
         to="/favorites"
         class="font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 rounded-[1px] text-parchment/50 transition-all duration-200 hover:border-gold hover:text-gold"
       >♥ Favorites<span v-if="favCount" class="ml-1 text-crimson-light">{{ favCount }}</span></RouterLink>
+      <RouterLink
+        to="/whats-new"
+        class="font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 rounded-[1px] text-parchment/50 transition-all duration-200 hover:border-gold hover:text-gold"
+      >✦ What Changed</RouterLink>
       <a
         :href="translateUrl"
         target="_blank"
