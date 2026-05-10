@@ -1,6 +1,11 @@
 <template>
   <header class="relative text-center pt-12 pb-8 px-4">
 
+    <RouterLink
+      to="/favorites"
+      class="absolute top-4 left-4 font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 rounded-[1px] text-parchment/50 transition-all duration-200 hover:border-gold hover:text-gold"
+    >♥ Favorites<span v-if="favCount" class="ml-1 text-crimson-light">{{ favCount }}</span></RouterLink>
+
     <button
       @click="toggleTheme"
       class="absolute top-4 right-4 font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold"
@@ -31,9 +36,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useFavorites } from '../composables/useFavorites.js'
 
 const isLight = ref(false)
+const { favorites } = useFavorites()
+const favCount = computed(() => favorites.value.length || null)
 
 onMounted(() => {
   isLight.value = localStorage.getItem('theme') === 'light'

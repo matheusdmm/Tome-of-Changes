@@ -12,10 +12,13 @@ The 2024 Player's Handbook rewrote a lot. Spells got tweaked, feats got overhaul
 
 Search for anything in the SRD — a spell, feat, creature, condition, magic item, or species — and instantly see both editions compared:
 
+- **Stat table** surfaces the mechanical stuff that matters (spell level, casting time, range, CR, size, speed) in a clean side-by-side table, with changed rows highlighted
 - **Word-level diffs** highlight added and removed text inline, so you spot changes at a glance instead of re-reading entire paragraphs
-- **Stat changes** surface the mechanical stuff that matters: spell level, casting time, range, duration, creature CR, species size and speed
 - **Detected Changes** gives you a plain-English summary at the bottom of each card
+- **Favorites** — heart any entry to save it for later; your list persists across sessions
+- **Ask AI** — one click copies a structured prompt (with both editions' full text and stats) to your clipboard, ready to paste into any LLM, with instructions to explain every change in Brazilian Portuguese
 - **Shareable links** — every search lives at its own URL, so you can drop it in Discord and your whole group sees the same result
+- **Light / dark theme** — toggle between themes; your preference is remembered
 
 ---
 
@@ -37,8 +40,8 @@ Search for anything in the SRD — a spell, feat, creature, condition, magic ite
 No backend, no database, no `.env` file to wrestle with. It talks directly to the Open5e API.
 
 ```bash
-git clone https://github.com/your-username/tome-of-changes.git
-cd tome-of-changes
+git clone https://github.com/matheusdmm/Tome-of-Changes.git
+cd Tome-of-Changes
 pnpm install
 pnpm dev
 ```

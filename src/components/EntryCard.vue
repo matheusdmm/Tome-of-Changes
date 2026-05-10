@@ -6,6 +6,17 @@
       <div class="font-cinzel text-base sm:text-[1.2rem] text-gold-bright font-semibold flex-1 min-w-0">{{ entry.name }}</div>
       <div class="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase py-[0.2rem] px-[0.7rem] border border-crimson text-crimson-light rounded-[1px] shrink-0">{{ entry.category }}</div>
       <button
+        @click="toggleFavorite(entry)"
+        :title="isFavorite(entry) ? 'Remove from favorites' : 'Add to favorites'"
+        class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border rounded-[1px] bg-transparent cursor-pointer transition-all duration-200 shrink-0"
+        :class="isFavorite(entry) ? 'border-crimson/60 text-crimson-light hover:border-crimson' : 'border-gold/40 text-parchment/50 hover:border-gold hover:text-gold'"
+      >{{ isFavorite(entry) ? '♥ Saved' : '♡ Save' }}</button>
+      <button
+        @click="copyForLLM"
+        title="Copy prompt for AI analysis in Portuguese"
+        class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
+      >{{ copiedLLM ? '✓ Copied' : '✦ Ask AI' }}</button>
+      <button
         @click="copyLink"
         :title="copied ? 'Copied!' : 'Copy shareable link'"
         class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
@@ -66,9 +77,12 @@ import { ref, computed } from 'vue'
 import WordDiff from './WordDiff.vue'
 import StatsTable from './StatsTable.vue'
 import { spellLevel, schoolName, speciesSize, speciesSpeed } from '../composables/useOpen5e.js'
+import { useFavorites } from '../composables/useFavorites.js'
 
 const props = defineProps({ entry: Object })
 const copied = ref(false)
+const copiedLLM = ref(false)
+const { isFavorite, toggleFavorite } = useFavorites()
 
 function truncate(t, max) { return t && t.length > max ? t.slice(0, max) + '…' : (t || '') }
 
@@ -76,6 +90,55 @@ function copyLink() {
   navigator.clipboard.writeText(`${window.location.origin}/compare/${props.entry.category}/${props.entry.name}`)
   copied.value = true
   setTimeout(() => copied.value = false, 2000)
+}
+
+function buildLLMPrompt() {
+  const { name, category, v2014: a, v2024: b, diffs } = props.entry
+  const lines = []
+
+  lines.push(`Você está analisando as mudanças entre as edições do D&D 5e de 2014 e 2024.`)
+  lines.push(``)
+  lines.push(`Entrada: ${name}`)
+  lines.push(`Categoria: ${category}`)
+  lines.push(``)
+
+  if (statRows.value.length) {
+    lines.push(`=== Comparação de Estatísticas ===`)
+    for (const row of statRows.value) {
+      const changed = row.changed ? ' [ALTERADO]' : ''
+      lines.push(`${row.label}: ${row.v14} (2014) → ${row.v24} (2024)${changed}`)
+    }
+    lines.push(``)
+  }
+
+  if (a) {
+    lines.push(`=== Edição 2014 — Descrição ===`)
+    lines.push(a.desc?.trim() || '(sem descrição)')
+    lines.push(``)
+  }
+
+  if (b) {
+    lines.push(`=== Edição 2024 — Descrição ===`)
+    lines.push(b.desc?.trim() || '(sem descrição)')
+    lines.push(``)
+  }
+
+  if (diffs?.length) {
+    lines.push(`=== Mudanças Detectadas ===`)
+    for (const d of diffs) lines.push(`→ ${d}`)
+    lines.push(``)
+  }
+
+  lines.push(`---`)
+  lines.push(`Com base nos dados acima, explique detalhadamente o que mudou entre as edições de 2014 e 2024 para esta entrada. Seja específico: mencione cada mudança mecânica, alteração de texto e qualquer impacto no jogo. Responda inteiramente em Português Brasileiro (pt-BR).`)
+
+  return lines.join('\n')
+}
+
+function copyForLLM() {
+  navigator.clipboard.writeText(buildLLMPrompt())
+  copiedLLM.value = true
+  setTimeout(() => copiedLLM.value = false, 2000)
 }
 
 function typeName(t) { return (typeof t === 'string' ? t : t?.name) || '—' }
