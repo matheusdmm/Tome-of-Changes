@@ -9,10 +9,13 @@
     <RouterLink to="/" class="block">
       <span class="text-gold text-[1.4rem] tracking-[0.5rem] opacity-70 block mb-2">⚔ ✦ ⚔</span>
       <h1
-        class="font-metamorphous text-[clamp(1.8rem,4vw,3rem)] text-gold-bright leading-tight"
-        :style="{ textShadow: isLight
-          ? '0 0 20px rgba(176,128,0,0.35)'
-          : '0 0 40px rgba(240,192,64,0.4), 2px 2px 0 rgba(0,0,0,0.8)' }"
+        class="text-[clamp(1.8rem,4vw,3rem)] text-gold-bright leading-tight"
+        :style="{
+          fontFamily: '\'Jim Nightshade\', cursive',
+          textShadow: isLight
+            ? '0 0 20px rgba(176,128,0,0.35)'
+            : '0 0 40px rgba(240,192,64,0.4), 2px 2px 0 rgba(0,0,0,0.8)'
+        }"
       >Tome of Changes</h1>
       <p class="font-cinzel text-parchment-dark text-[0.9rem] mt-2 tracking-[0.15em] opacity-80">
         D&amp;D 5e (2014) · versus · D&amp;D 2024
