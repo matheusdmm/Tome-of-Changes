@@ -4,8 +4,8 @@
       v-for="(token, i) in tokens"
       :key="i"
       :class="{
-        'bg-crimson/30 text-[#e07070] line-through rounded-sm px-px': token.type === 'removed',
-        'bg-v2024/20 text-[#8de08d] rounded-sm px-px': token.type === 'added',
+        'bg-crimson/30 text-[var(--color-diff-removed)] line-through rounded-sm px-px': token.type === 'removed',
+        'bg-v2024/20 text-[var(--color-diff-added)] rounded-sm px-px': token.type === 'added',
       }"
     >{{ token.text }}</span>
   </span>

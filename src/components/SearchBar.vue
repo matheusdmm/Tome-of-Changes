@@ -8,7 +8,7 @@
         @input="$emit('update:modelValue', $event.target.value)"
         placeholder="Search by name..."
         autocomplete="off"
-        class="w-full bg-[#0f0a02] border border-gold rounded-sm py-[0.9rem] pr-4 pl-12 font-cinzel text-[0.95rem] text-parchment tracking-[0.05em] outline-none transition-[box-shadow,border-color] duration-300 shadow-[0_0_15px_rgba(184,134,11,0.1)] placeholder:text-parchment/30 focus:border-gold-bright focus:shadow-[0_0_25px_rgba(240,192,64,0.2)]"
+        class="w-full bg-input-bg border border-gold rounded-sm py-[0.9rem] pr-4 pl-12 text-base text-parchment outline-none transition-[box-shadow,border-color] duration-300 shadow-[0_0_15px_rgba(184,134,11,0.1)] placeholder:text-parchment/30 focus:border-gold-bright focus:shadow-[0_0_25px_rgba(240,192,64,0.2)]"
       />
     </div>
 
