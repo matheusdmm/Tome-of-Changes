@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&family=Metamorphous&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-parchment: #f5ead7;
+  --color-parchment-dark: #e8d5b0;
+  --color-crimson: #8b1a1a;
+  --color-crimson-light: #c0392b;
+  --color-gold: #b8860b;
+  --color-gold-light: #d4a017;
+  --color-gold-bright: #f0c040;
+  --color-v2014: #5b8fc9;
+  --color-v2024: #5bb05b;
+  --color-bg: #0d0a06;
+  --color-bg-card: #120c02;
+
+  /* Fonts */
+  --font-family-im-fell: 'IM Fell English', Georgia, serif;
+  --font-family-cinzel: 'Cinzel', serif;
+  --font-family-cinzel-decorative: 'Cinzel Decorative', serif;
+  --font-family-metamorphous: 'Metamorphous', serif;
+
+  /* Custom animations */
+  --animate-fade-in: fadeIn 0.35s ease forwards;
+  --animate-pulse-glow: loading-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loading-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+body {
+  background: var(--color-bg);
+  font-family: var(--font-family-im-fell);
+  color: var(--color-parchment);
+  min-height: 100vh;
+}
+
+a { color: inherit; text-decoration: none; }
