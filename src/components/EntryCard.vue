@@ -22,6 +22,11 @@
           :title="copied ? 'Copied!' : 'Copy shareable link'"
           class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
         >{{ copied ? '✓ Copied' : '⇥ Share' }}</button>
+        <button
+          @click="noteOpen = !noteOpen"
+          class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border rounded-[1px] bg-transparent cursor-pointer transition-all duration-200 shrink-0"
+          :class="noteText ? 'border-gold/60 text-gold hover:border-gold' : 'border-gold/40 text-parchment/50 hover:border-gold hover:text-gold'"
+        >✎ Note{{ noteText ? ' ●' : '' }}</button>
       </div>
     </div>
 
@@ -71,6 +76,18 @@
         >{{ d }}</li>
       </ul>
     </div>
+
+    <!-- Session note -->
+    <div v-if="noteOpen || noteText" class="border-t border-gold/15 px-4 py-3 sm:px-6">
+      <div class="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase text-parchment/40 mb-2">✎ Session Note (Write Your own)</div>
+      <textarea
+        v-model="noteText"
+        @input="scheduleNoteSave"
+        placeholder="Add a note for your session..."
+        rows="3"
+        class="w-full bg-transparent text-parchment/70 text-sm resize-none outline-none placeholder:text-parchment/20 leading-relaxed"
+      />
+    </div>
   </div>
 </template>
 
@@ -81,11 +98,22 @@ import WordDiff from './WordDiff.vue'
 import StatsTable from './StatsTable.vue'
 import { spellLevel, schoolName, speciesSize, speciesSpeed } from '../composables/useOpen5e.js'
 import { useFavorites } from '../composables/useFavorites.js'
+import { useNotes } from '../composables/useNotes.js'
 
 const props = defineProps({ entry: Object })
 const copied = ref(false)
 const copiedLLM = ref(false)
 const { isFavorite, toggleFavorite: _toggleFavorite } = useFavorites()
+const { getNote, saveNote } = useNotes()
+
+const noteOpen = ref(false)
+const noteText = ref(getNote(props.entry))
+
+let noteTimer = null
+function scheduleNoteSave() {
+  clearTimeout(noteTimer)
+  noteTimer = setTimeout(() => saveNote(props.entry, noteText.value), 600)
+}
 
 function toggleFavorite(entry) {
   const adding = !isFavorite(entry)

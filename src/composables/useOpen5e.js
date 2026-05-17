@@ -18,7 +18,62 @@ async function fetchByName(endpoint, name, docField, docKey) {
   return d.results || []
 }
 
+// Conditions use a different API shape: one entry per condition with a
+// `descriptions` array keyed by document, instead of separate per-edition entries.
+export async function fetchAllConditions() {
+  const url = `${BASE}/v2/conditions/?limit=100`
+  const r = await fetch(url)
+  if (!r.ok) return []
+  const d = await r.json()
+
+  return (d.results || [])
+    .map(condition => {
+      const raw14 = condition.descriptions?.find(x => x.document === 'srd-2014')
+      const raw24 = condition.descriptions?.find(x => x.document === 'srd-2024')
+      if (!raw14 && !raw24) return null
+      const v2014 = raw14 ? { name: condition.name, desc: raw14.desc } : null
+      const v2024 = raw24 ? { name: condition.name, desc: raw24.desc } : null
+      return {
+        slug:  condition.key,
+        name:  condition.name,
+        category: 'Condition',
+        v2014,
+        v2024,
+        diffs: (v2014 && v2024) ? computeDiff('Condition', v2014, v2024) : [],
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.name.localeCompare(b.name))
+}
+
+async function searchConditions(name) {
+  const url = `${BASE}/v2/conditions/?limit=100`
+  const r = await fetch(url)
+  if (!r.ok) return []
+  const d = await r.json()
+  const needle = name.toLowerCase()
+  return (d.results || [])
+    .filter(condition => condition.name.toLowerCase().includes(needle))
+    .map(condition => {
+      const raw14 = condition.descriptions?.find(x => x.document === 'srd-2014')
+      const raw24 = condition.descriptions?.find(x => x.document === 'srd-2024')
+      if (!raw14 && !raw24) return null
+      const v2014 = raw14 ? { name: condition.name, desc: raw14.desc } : null
+      const v2024 = raw24 ? { name: condition.name, desc: raw24.desc } : null
+      return {
+        slug:  condition.key,
+        name:  condition.name,
+        category: 'Condition',
+        v2014,
+        v2024,
+        diffs: (v2014 && v2024) ? computeDiff('Condition', v2014, v2024) : [],
+      }
+    })
+    .filter(Boolean)
+}
+
 export async function searchEntries(category, name) {
+  if (category === 'Condition') return searchConditions(name)
   const cat = CATEGORIES[category]
   if (!cat) throw new Error(`Unknown category: ${category}`)
   const { endpoint: ep, docField, doc14, doc24 } = cat
