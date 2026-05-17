@@ -29,10 +29,12 @@ import SearchBar from '../components/SearchBar.vue'
 import EntryCard from '../components/EntryCard.vue'
 import { searchEntries } from '../composables/useOpen5e.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
+import { useRecentlyViewed } from '../composables/useRecentlyViewed.js'
 import { track } from '@vercel/analytics'
 
 const route  = useRoute()
 const router = useRouter()
+const { addRecentlyViewed } = useRecentlyViewed()
 
 const query    = ref(route.params.query || '')
 const category = ref(route.params.category || 'Spell')
@@ -60,6 +62,7 @@ async function doSearch() {
   loading.value = true; error.value = null
   try {
     results.value = await searchEntries(category.value, q)
+    results.value.forEach(entry => addRecentlyViewed(entry))
     track('search', { category: category.value, results: results.value.length })
   } catch {
     error.value = 'Could not reach Open5e API.'
