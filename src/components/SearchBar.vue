@@ -3,6 +3,7 @@
     <div class="max-w-[600px] mx-auto mb-4 relative">
       <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gold text-[1.1rem] pointer-events-none">⚔</span>
       <input
+        ref="inputRef"
         type="text"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
@@ -29,8 +30,23 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
 import { CATEGORIES } from '../composables/useOpen5e.js'
 
 defineProps({ modelValue: String, category: String })
 defineEmits(['update:modelValue', 'update:category'])
+
+const inputRef = ref(null)
+
+function onKeydown(e) {
+  const active = document.activeElement
+  if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return
+  if (e.key === '/' || (e.ctrlKey && e.key === 'k')) {
+    e.preventDefault()
+    inputRef.value?.focus()
+  }
+}
+
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 </script>

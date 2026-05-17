@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex-1 flex flex-col justify-center">
     <FactCard />
     <SearchBar v-model="query" v-model:category="category" />
     <div
