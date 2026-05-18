@@ -124,7 +124,7 @@ function toggleFavorite(entry) {
 function truncate(t, max) { return t && t.length > max ? t.slice(0, max) + '…' : (t || '') }
 
 function copyLink() {
-  navigator.clipboard.writeText(`${window.location.origin}/compare/${props.entry.category}/${props.entry.name}`)
+  navigator.clipboard.writeText(`${window.location.origin}/compare/${encodeURIComponent(props.entry.category)}/${encodeURIComponent(props.entry.name)}`)
   track('share', { category: props.entry.category, name: props.entry.name })
   copied.value = true
   setTimeout(() => copied.value = false, 2000)
