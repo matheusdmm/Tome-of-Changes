@@ -13,7 +13,7 @@
         <RouterLink
           v-for="item in recentlyViewed"
           :key="`${item.category}-${item.slug}`"
-          :to="`/compare/${item.category}/${item.name}`"
+          :to="`/compare/${encodeURIComponent(item.category)}/${encodeURIComponent(item.name)}`"
           class="font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 rounded-[1px] text-parchment/50 transition-all duration-200 hover:border-gold hover:text-gold"
         >{{ item.name }}</RouterLink>
       </div>
@@ -43,6 +43,6 @@ let timer = null
 watch(query, val => {
   clearTimeout(timer)
   if (!val.trim()) return
-  timer = setTimeout(() => router.push(`/compare/${category.value}/${val.trim()}`), 600)
+  timer = setTimeout(() => router.push(`/compare/${encodeURIComponent(category.value)}/${encodeURIComponent(val.trim())}`), 600)
 })
 </script>

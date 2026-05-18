@@ -76,7 +76,7 @@ let timer = null
 watch([query, category], ([q, cat]) => {
   clearTimeout(timer)
   if (!q.trim()) return
-  timer = setTimeout(() => router.replace(`/compare/${cat}/${q.trim()}`), 400)
+  timer = setTimeout(() => router.replace(`/compare/${encodeURIComponent(cat)}/${encodeURIComponent(q.trim())}`), 400)
 })
 
 watch(() => route.params, params => {
