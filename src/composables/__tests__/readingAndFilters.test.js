@@ -4,6 +4,15 @@ import { filterEntries, filterChoices } from '../../utils/entryFilters.js'
 import { sourceDetails } from '../../utils/sourceDetails.js'
 
 describe('changes-only reading', () => {
+  it('preserves both source texts and every edit across varied insertions, deletions, and whitespace', () => {
+    const variants = ['', 'one', 'one two three', 'one\n\ntwo\tthree', 'one one two one', 'ação 1d6 → 2d6', '  leading and trailing  ']
+    for (const a of variants) for (const b of variants) {
+      const tokens = groupDiffTokens(wordDiff(a, b)), changes = changedPassages(tokens)
+      expect(tokens.filter(t => t.type !== 'added').map(t => t.text).join('')).toBe(a)
+      expect(tokens.filter(t => t.type !== 'removed').map(t => t.text).join('')).toBe(b)
+      expect(changes.filter(t => ['removed', 'added'].includes(t.type))).toEqual(tokens.filter(t => t.type !== 'same'))
+    }
+  })
   it('retains nearby context and both edits while collapsing distant unchanged text', () => {
     const prefix = Array.from({ length: 40 }, (_, i) => `start${i}`).join(' ')
     const suffix = Array.from({ length: 40 }, (_, i) => `end${i}`).join(' ')

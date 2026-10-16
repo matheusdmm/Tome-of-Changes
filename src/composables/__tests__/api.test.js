@@ -7,6 +7,29 @@ const reviewedAliases = [...ENTRY_ALIASES]
 beforeEach(() => { clearApiCache(); vi.stubGlobal('fetch', vi.fn()); ENTRY_ALIASES.splice(0, ENTRY_ALIASES.length, ...reviewedAliases) })
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); ENTRY_ALIASES.splice(0, ENTRY_ALIASES.length, ...reviewedAliases) })
 describe('API transport and edition matching', () => {
+  it('browses every edition page without a name and keeps named searches in a separate cache', async () => {
+    fetch.mockImplementation(async url => {
+      const parsed = new URL(url), doc = parsed.searchParams.get('document__key__in')
+      const needle = parsed.searchParams.get('name__icontains')
+      if (needle) return response([record(needle, doc)])
+      if (parsed.searchParams.get('page') === '2') return response([record('Second', doc)])
+      parsed.searchParams.set('page', '2')
+      return response([record('First', doc)], parsed.href)
+    })
+    expect((await searchEntries('Spell', '')).entries).toEqual([])
+    expect(fetch).not.toHaveBeenCalled()
+    expect((await searchEntries('Spell', '', { browse: true })).entries.map(e => e.name)).toEqual(['First', 'Second'])
+    expect(fetch).toHaveBeenCalledTimes(4)
+    expect((await searchEntries('Spell', 'Named')).entries.map(e => e.name)).toEqual(['Named'])
+    expect(fetch).toHaveBeenCalledTimes(6)
+    await searchEntries('Spell', '', { browse: true })
+    expect(fetch).toHaveBeenCalledTimes(6)
+  })
+  it('rejects repeated pagination pages rather than hanging or duplicating entries', async () => {
+    fetch.mockImplementation(async url => response([], url))
+    await expect(searchEntries('Creature', '', { browse: true })).rejects.toThrow('repeated a results page')
+    expect(fetch).toHaveBeenCalledTimes(2)
+  })
   it('retains partial results and marks an unavailable edition', async () => {
     fetch.mockImplementation(async url => url.includes('srd-2014') ? { ok: false, status: 503 } : response([record('Example', 'srd-2024')]))
     const result = await searchEntries('Spell', 'Example')

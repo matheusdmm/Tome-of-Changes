@@ -53,13 +53,14 @@ usePageMeta(computed(() => `${query.value || 'Browse'} — ${category.value} | T
 let timer, syncing = false
 function submit() {
   clearTimeout(timer)
-  if (!query.value.trim() && !browsing.value) { clear(); return }
   const changedCategory = category.value !== route.params.category
   const parameters = changedCategory ? {} : { ...route.query }
   delete parameters.page
   const target = browsing.value
     ? { name: 'browse', params: { category: category.value }, query: { ...parameters, q: query.value.trim() || undefined } }
-    : { name: 'compare', params: { category: category.value, query: query.value.trim() }, query: parameters }
+    : query.value.trim()
+      ? { name: 'compare', params: { category: category.value, query: query.value.trim() }, query: parameters }
+      : { path: `/compare/${encodeURIComponent(category.value)}/`, query: parameters }
   if (router.resolve(target).fullPath === route.fullPath) run(category.value, query.value, false, browsing.value)
   else router.replace(target)
 }
@@ -74,7 +75,6 @@ function resetFilters() {
 watch([query, category], () => {
   if (syncing) return
   clearTimeout(timer); clear()
-  if (!query.value.trim() && !browsing.value) return
   timer = setTimeout(submit, 400)
 }, { flush: 'sync' })
 watch(() => JSON.stringify([route.name, route.params.category, route.params.query, route.query.q]), async () => {
