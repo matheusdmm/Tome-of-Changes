@@ -1,0 +1,1165 @@
+{
+  "Feat": {
+    "srd-2024": {
+      "key": "srd-2024_grappler",
+      "has_prerequisite": true,
+      "benefits": [
+        {
+          "desc": "Increase your Strength or Dexterity score by 1, to a maximum of 20."
+        },
+        {
+          "desc": "When you hit a creature with an Unarmed Strike as part of the Attack action on your turn, you can use both the Damage and the Grapple option. You can use this benefit only once per turn."
+        },
+        {
+          "desc": "You have Advantage on attack rolls against a creature Grappled by you."
+        },
+        {
+          "desc": "You don't have to spend extra movement to move a creature Grappled by you if the creature is your size or smaller."
+        }
+      ],
+      "document": {
+        "name": "System Reference Document 5.2",
+        "key": "srd-2024",
+        "type": "SOURCE",
+        "display_name": "5e 2024 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2024",
+          "key": "5e-2024"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "name": "Grappler",
+      "desc": "You gain the following benefits.",
+      "prerequisite": "Level 4+, Strength or Dexterity 13+",
+      "type": "General",
+      "crossreferences": {
+        "to": []
+      }
+    },
+    "srd-2014": {
+      "key": "srd_grappler",
+      "has_prerequisite": true,
+      "benefits": [
+        {
+          "desc": "You have advantage on attack rolls against a creature you are grappling."
+        },
+        {
+          "desc": "You can use your action to try to pin a creature grappled by you. The creature makes a Strength or Dexterity saving throw against your maneuver DC. On a failure, you and the creature are both restrained until the grapple ends."
+        }
+      ],
+      "document": {
+        "name": "System Reference Document 5.1",
+        "key": "srd-2014",
+        "type": "SOURCE",
+        "display_name": "5e 2014 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2014",
+          "key": "5e-2014"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "name": "Grappler",
+      "desc": "You've developed the skills necessary to hold your own in close-quarters grappling. You gain the following benefits:",
+      "prerequisite": "Strength 13 or higher",
+      "type": "GENERAL",
+      "crossreferences": {
+        "to": [
+          {
+            "anchor": "Grappling",
+            "url": "https://api.open5e.com/v2/rules/srd_attacking_grappling/"
+          },
+          {
+            "anchor": "Skills",
+            "url": "https://api.open5e.com/v2/rules/srd_abilities_skills/"
+          }
+        ]
+      }
+    }
+  },
+  "Race": {
+    "srd-2024": {
+      "key": "srd-2024_elf",
+      "is_subspecies": false,
+      "document": {
+        "name": "System Reference Document 5.2",
+        "key": "srd-2024",
+        "type": "SOURCE",
+        "display_name": "5e 2024 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2024",
+          "key": "5e-2024"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "traits": [
+        {
+          "name": "Size",
+          "desc": "Medium (about 5–6 feet tall)",
+          "type": "SIZE",
+          "order": 1,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Speed",
+          "desc": "30 feet",
+          "type": "SPEED",
+          "order": 2,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Darkvision",
+          "desc": "You have Darkvision with a range of 60 feet.",
+          "type": null,
+          "order": 3,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Elven Lineage",
+          "desc": "You are part of a lineage that grants you supernatural abilities. Choose a lineage from the Elven Lineages table. You gain the level 1 benefit of that lineage.\n\nWhen you reach character levels 3 and 5, you learn a higher-level spell, as shown on the table. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.\n\nTable: Elven Lineages\n\n|Lineage|Level 1|Level 3|Level 5|\n|---|---|---|---|\n|Drow|The range of your Darkvision increases to 120 feet. You also know the Dancing Lights cantrip.|Faerie Fire|Darkness|\n|High Elf|You know the Prestidigitation cantrip. Whenever you finish a Long Rest, you can replace that cantrip with a different cantrip from the Wizard spell list.|Detect Magic|Misty Step|\n|Wood Elf|Your Speed increases to 35 feet. You also know the Druidcraft cantrip.|Longstrider|Pass without Trace|\n\nIntelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the lineage).",
+          "type": null,
+          "order": 4,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Fey Ancestry",
+          "desc": "You have Advantage on saving throws you make to avoid or end the Charmed condition.",
+          "type": null,
+          "order": 5,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Keen Senses",
+          "desc": "You have proficiency in the Insight, Perception, or Survival skill.",
+          "type": null,
+          "order": 6,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Trance",
+          "desc": "You don't need to sleep, and magic can't put you to sleep. You can finish a Long Rest in 4 hours if you spend those hours in a trancelike meditation, during which you retain consciousness.",
+          "type": null,
+          "order": 7,
+          "crossreferences": {
+            "to": []
+          }
+        }
+      ],
+      "name": "Elf",
+      "desc": "",
+      "subspecies_of": null,
+      "crossreferences": {
+        "to": []
+      }
+    },
+    "srd-2014": {
+      "key": "srd_elf",
+      "is_subspecies": false,
+      "document": {
+        "name": "System Reference Document 5.1",
+        "key": "srd-2014",
+        "type": "SOURCE",
+        "display_name": "5e 2014 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2014",
+          "key": "5e-2014"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "traits": [
+        {
+          "name": "Ability Score Increase",
+          "desc": "Your Dexterity score increases by 2.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Speed",
+          "desc": "Your base walking speed is 30 feet.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Darkvision",
+          "desc": "Accustomed to twilit forests and the night sky, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Age",
+          "desc": "Although elves reach physical maturity at about the same age as humans, the elven understanding of adulthood goes beyond physical growth to encompass worldly experience. An elf typically claims adulthood and an adult name around the age of 100 and can live to be 750 years old.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Alignment",
+          "desc": "Elves love freedom, variety, and self-­expression, so they lean strongly toward the gentler aspects of chaos. They value and protect others’ freedom as well as their own, and they are more often good than not.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Size",
+          "desc": "Elves range from under 5 to over 6 feet tall and have slender builds. Your size is Medium.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Languages",
+          "desc": "You can speak, read, and write Common and Elvish. Elvish is fluid, with subtle intonations and intricate grammar. Elven literature is rich and varied, and their songs and poems are famous among other races. Many bards learn their language so they can add Elvish ballads to their repertoires.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Keen Senses",
+          "desc": "You have proficiency in the Perception skill.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Fey Ancestry",
+          "desc": "You have advantage on saving throws against being charmed, and magic can't put you to sleep.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        },
+        {
+          "name": "Trance",
+          "desc": "Elves don't need to sleep. Instead, they meditate deeply, remaining semiconscious, for 4 hours a day. (The Common word for such meditation is “trance.”) While meditating, you can dream after a fashion; such dreams are actually mental exercises that have become reflexive through years of practice. After resting in this way, you gain the same benefit that a human does from 8 hours of sleep.",
+          "type": null,
+          "order": null,
+          "crossreferences": {
+            "to": []
+          }
+        }
+      ],
+      "name": "Elf",
+      "desc": "Your elf character has a variety of natural abilities, the result of thousands of years of elven refinement.",
+      "subspecies_of": null,
+      "crossreferences": {
+        "to": []
+      }
+    }
+  },
+  "MagicItem": {
+    "srd-2024": {
+      "key": "srd-2024_bag-of-holding",
+      "name": "Bag of Holding",
+      "desc": "This bag has an interior space considerably larger than its outside dimensions—roughly 2 feet square and 4 feet deep on the inside. The bag can hold up to 500 pounds, not exceeding a volume of 64 cubic feet. The bag weighs 5 pounds, regardless of its contents. Retrieving an item from the bag requires a Utilize action. If the bag is overloaded, pierced, or torn, it is destroyed, and its contents are scattered in the Astral Plane. If the bag is turned inside out, its contents spill forth unharmed, but the bag must be put right before it can be used again. The bag holds enough air for 10 minutes of breathing, divided by the number of breathing creatures inside. Placing a Bag of Holding inside an extradimensional space created by a Handy Haversack, Portable Hole, or similar item instantly destroys both items and opens a gate to the Astral Plane. The gate originates where the one item was placed inside the other. Any creature within a 10-foot-radius Sphere centered on the gate is sucked through it to a random location on the Astral Plane. The gate then closes. The gate is one-way and can't be reopened.",
+      "category": {
+        "name": "Wondrous Item",
+        "key": "wondrous-item"
+      },
+      "rarity": {
+        "name": "Uncommon",
+        "key": "uncommon",
+        "rank": 2
+      },
+      "weapon": null,
+      "armor": null,
+      "size": {
+        "name": "Tiny",
+        "key": "tiny"
+      },
+      "weight": "0.000",
+      "weight_unit": "lb",
+      "cost": "0.00",
+      "requires_attunement": false,
+      "attunement_detail": null,
+      "document": {
+        "name": "System Reference Document 5.2",
+        "key": "srd-2024",
+        "type": "SOURCE",
+        "display_name": "5e 2024 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2024",
+          "key": "5e-2024"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "crossreferences": {
+        "to": []
+      }
+    },
+    "srd-2014": {
+      "key": "srd_bag-of-holding",
+      "name": "Bag of Holding",
+      "desc": "This bag has an interior space considerably larger than its outside dimensions, roughly 2 feet in diameter at the mouth and 4 feet deep. The bag can hold up to 500 pounds, not exceeding a volume of 64 cubic feet. The bag weighs 15 pounds, regardless of its contents. Retrieving an item from the bag requires an action.\r\n\r\nIf the bag is overloaded, pierced, or torn, it ruptures and is destroyed, and its contents are scattered in the Astral Plane. If the bag is turned inside out, its contents spill forth, unharmed, but the bag must be put right before it can be used again. Breathing creatures inside the bag can survive up to a number of minutes equal to 10 divided by the number of creatures (minimum 1 minute), after which time they begin to suffocate.\r\n\r\nPlacing a _bag of holding_ inside an extradimensional space created by a _handy haversack_, _portable hole_, or similar item instantly destroys both items and opens a gate to the Astral Plane. The gate originates where the one item was placed inside the other. Any creature within 10 feet of the gate is sucked through it to a random location on the Astral Plane. The gate then closes. The gate is one-way only and can't be reopened.",
+      "category": {
+        "name": "Wondrous Item",
+        "key": "wondrous-item"
+      },
+      "rarity": {
+        "name": "Uncommon",
+        "key": "uncommon",
+        "rank": 2
+      },
+      "weapon": null,
+      "armor": null,
+      "size": {
+        "name": "Tiny",
+        "key": "tiny"
+      },
+      "weight": "0.000",
+      "weight_unit": "lb",
+      "cost": "0.00",
+      "requires_attunement": false,
+      "attunement_detail": null,
+      "document": {
+        "name": "System Reference Document 5.1",
+        "key": "srd-2014",
+        "type": "SOURCE",
+        "display_name": "5e 2014 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2014",
+          "key": "5e-2014"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "crossreferences": {
+        "to": []
+      }
+    }
+  },
+  "Creature": {
+    "srd-2024": {
+      "key": "srd-2024_aboleth",
+      "name": "Aboleth",
+      "document": {
+        "name": "System Reference Document 5.2",
+        "key": "srd-2024",
+        "type": "SOURCE",
+        "display_name": "5e 2024 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2024",
+          "key": "5e-2024"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "type": {
+        "name": "Aberration",
+        "key": "aberration"
+      },
+      "size": {
+        "name": "Large",
+        "key": "large"
+      },
+      "challenge_rating": 10.0,
+      "proficiency_bonus": null,
+      "speed": {
+        "walk": 10,
+        "unit": "feet",
+        "swim": 40
+      },
+      "speed_all": {
+        "unit": "feet",
+        "walk": 10,
+        "crawl": 5,
+        "hover": false,
+        "fly": 0,
+        "burrow": 0,
+        "climb": 5,
+        "swim": 40
+      },
+      "category": "Monsters",
+      "subcategory": null,
+      "alignment": "lawful evil",
+      "languages": {
+        "as_string": "Deep Speech; telepathy 120 ft.",
+        "data": [
+          {
+            "name": "Deep Speech",
+            "key": "deep-speech",
+            "desc": "Typical speakers include aboleths and cloakers. It is only spoken."
+          }
+        ]
+      },
+      "armor_class": 17,
+      "armor_detail": "natural armor",
+      "hit_points": 150,
+      "hit_dice": "20d10 + 40",
+      "experience_points": 5900,
+      "ability_scores": {
+        "strength": 21,
+        "dexterity": 9,
+        "constitution": 15,
+        "intelligence": 18,
+        "wisdom": 15,
+        "charisma": 18
+      },
+      "modifiers": {
+        "strength": 5,
+        "dexterity": -1,
+        "constitution": 2,
+        "intelligence": 4,
+        "wisdom": 2,
+        "charisma": 4
+      },
+      "initiative_bonus": 7,
+      "saving_throws": {
+        "strength": 5,
+        "dexterity": 3,
+        "constitution": 6,
+        "intelligence": 8,
+        "wisdom": 6,
+        "charisma": 4
+      },
+      "saving_throws_all": {
+        "strength": 5,
+        "dexterity": 3,
+        "constitution": 6,
+        "intelligence": 8,
+        "wisdom": 6,
+        "charisma": 4
+      },
+      "skill_bonuses": {
+        "history": 12,
+        "perception": 10
+      },
+      "skill_bonuses_all": {
+        "acrobatics": -1,
+        "animal_handling": 2,
+        "arcana": 4,
+        "athletics": 5,
+        "deception": 4,
+        "history": 12,
+        "insight": 2,
+        "intimidation": 4,
+        "investigation": 4,
+        "medicine": 2,
+        "nature": 4,
+        "perception": 10,
+        "performance": 4,
+        "persuasion": 4,
+        "religion": 4,
+        "sleight_of_hand": -1,
+        "stealth": -1,
+        "survival": 2
+      },
+      "passive_perception": 20,
+      "resistances_and_immunities": {
+        "damage_immunities_display": "",
+        "damage_immunities": [],
+        "damage_resistances_display": "",
+        "damage_resistances": [],
+        "damage_vulnerabilities_display": "",
+        "damage_vulnerabilities": [],
+        "condition_immunities_display": "",
+        "condition_immunities": []
+      },
+      "normal_sight_range": 10560,
+      "darkvision_range": 120,
+      "blindsight_range": null,
+      "tremorsense_range": null,
+      "truesight_range": null,
+      "actions": [
+        {
+          "name": "Consume Memories",
+          "desc": "Intelligence Saving Throw: DC 16, one creature within 30 feet that is Charmed or Grappled by the aboleth. Failure: 10 (3d6) Psychic damage. Success: Half damage. Failure or Success: The aboleth gains the target's memories if the target is a Humanoid and is reduced to 0 Hit Points by this action.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "ACTION",
+          "order_in_statblock": 2,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": null
+        },
+        {
+          "name": "Dominate Mind",
+          "desc": "Wisdom Saving Throw: DC 16, one creature the aboleth can see within 30 feet. Failure: The target has the Charmed condition until the aboleth dies or is on a different plane of existence from the target. While Charmed, the target acts as an ally to the aboleth and is under its control while within 60 feet of it. In addition, the aboleth and the target can communicate telepathically with each other over any distance. The target repeats the save whenever it takes damage as well as after every 24 hours it spends at least 1 mile away from the aboleth, ending the effect on itself on a success.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "ACTION",
+          "order_in_statblock": 3,
+          "legendary_action_cost": null,
+          "limited_to_form": null,
+          "usage_limits": {
+            "type": "PER_DAY",
+            "param": 2
+          }
+        },
+        {
+          "name": "Lash",
+          "desc": "The aboleth makes one Tentacle attack.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "LEGENDARY_ACTION",
+          "order_in_statblock": 0,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": null
+        },
+        {
+          "name": "Multiattack",
+          "desc": "The aboleth makes two Tentacle attacks and uses either Consume Memories or Dominate Mind if available.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "ACTION",
+          "order_in_statblock": 0,
+          "legendary_action_cost": null,
+          "limited_to_form": null,
+          "usage_limits": null
+        },
+        {
+          "name": "Psychic Drain",
+          "desc": "If the aboleth has at least one creature Charmed or Grappled, it uses Consume Memories and regains 5 (1d10) Hit Points.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "LEGENDARY_ACTION",
+          "order_in_statblock": 1,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": null
+        },
+        {
+          "name": "Tentacle",
+          "desc": "Melee Attack Roll: +9, reach 15 ft. 12 (2d6 + 5) Bludgeoning damage. If the target is a Large or smaller creature, it has the Grappled condition (escape DC 14) from one of four tentacles.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [
+            {
+              "name": "Tentacle attack",
+              "attack_type": "WEAPON",
+              "to_hit_mod": 9,
+              "reach": 15,
+              "range": null,
+              "long_range": null,
+              "target_creature_only": false,
+              "damage_die_count": 2,
+              "damage_die_type": "D6",
+              "damage_bonus": 5,
+              "damage_type": null,
+              "extra_damage_die_count": null,
+              "extra_damage_die_type": null,
+              "extra_damage_bonus": null,
+              "extra_damage_type": {
+                "name": "Bludgeoning",
+                "key": "bludgeoning"
+              },
+              "distance_unit": "feet"
+            }
+          ],
+          "action_type": "ACTION",
+          "order_in_statblock": 1,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": null
+        }
+      ],
+      "traits": [
+        {
+          "name": "Amphibious",
+          "desc": "The aboleth can breathe air and water."
+        },
+        {
+          "name": "Eldritch Restoration",
+          "desc": "If destroyed, the aboleth gains a new body in 5d10 days, reviving with all its Hit Points in the Far Realm or another location chosen by the DM."
+        },
+        {
+          "name": "Legendary Resistance (3/Day, or 4/Day in Lair)",
+          "desc": "If the aboleth fails a saving throw, it can choose to succeed instead."
+        },
+        {
+          "name": "Mucus Cloud",
+          "desc": "While underwater, the aboleth is surrounded by mucus. Constitution Saving Throw: DC 14, each creature in a 5-foot Emanation originating from the aboleth at the end of the aboleth's turn. Failure: The target is cursed. Until the curse ends, the target's skin becomes slimy, the target can breathe air and water, and it can't regain Hit Points unless it is underwater. While the cursed creature is outside a body of water, the creature takes 6 (1d12) Acid damage at the end of every 10 minutes unless moisture is applied to its skin before those minutes have passed."
+        },
+        {
+          "name": "Probing Telepathy",
+          "desc": "If a creature the aboleth can see communicates telepathically with the aboleth, the aboleth learns the creature's greatest desires."
+        }
+      ],
+      "creaturesets": [],
+      "environments": [],
+      "illustration": null,
+      "crossreferences": {
+        "to": []
+      }
+    },
+    "srd-2014": {
+      "key": "srd_aboleth",
+      "name": "Aboleth",
+      "document": {
+        "name": "System Reference Document 5.1",
+        "key": "srd-2014",
+        "type": "SOURCE",
+        "display_name": "5e 2014 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2014",
+          "key": "5e-2014"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "type": {
+        "name": "Aberration",
+        "key": "aberration"
+      },
+      "size": {
+        "name": "Large",
+        "key": "large"
+      },
+      "challenge_rating": 10.0,
+      "proficiency_bonus": null,
+      "speed": {
+        "walk": 10,
+        "unit": "feet",
+        "swim": 40
+      },
+      "speed_all": {
+        "unit": "feet",
+        "walk": 10,
+        "crawl": 5,
+        "hover": false,
+        "fly": 0,
+        "burrow": 0,
+        "climb": 5,
+        "swim": 40
+      },
+      "category": "Monsters",
+      "subcategory": null,
+      "alignment": "lawful evil",
+      "languages": {
+        "as_string": "Deep Speech, telepathy 120 ft.",
+        "data": [
+          {
+            "name": "Deep Speech",
+            "key": "deep-speech",
+            "desc": "Typical speakers include aboleths and cloakers. It is only spoken."
+          }
+        ]
+      },
+      "armor_class": 17,
+      "armor_detail": "natural armor",
+      "hit_points": 135,
+      "hit_dice": "18d10+36",
+      "experience_points": 5900,
+      "ability_scores": {
+        "strength": 21,
+        "dexterity": 9,
+        "constitution": 15,
+        "intelligence": 18,
+        "wisdom": 15,
+        "charisma": 18
+      },
+      "modifiers": {
+        "strength": 5,
+        "dexterity": -1,
+        "constitution": 2,
+        "intelligence": 4,
+        "wisdom": 2,
+        "charisma": 4
+      },
+      "initiative_bonus": -1,
+      "saving_throws": {
+        "constitution": 6,
+        "intelligence": 8,
+        "wisdom": 6
+      },
+      "saving_throws_all": {
+        "strength": 5,
+        "dexterity": -1,
+        "constitution": 6,
+        "intelligence": 8,
+        "wisdom": 6,
+        "charisma": 4
+      },
+      "skill_bonuses": {
+        "history": 12,
+        "perception": 10
+      },
+      "skill_bonuses_all": {
+        "acrobatics": -1,
+        "animal_handling": 2,
+        "arcana": 4,
+        "athletics": 5,
+        "deception": 4,
+        "history": 12,
+        "insight": 2,
+        "intimidation": 4,
+        "investigation": 4,
+        "medicine": 2,
+        "nature": 4,
+        "perception": 10,
+        "performance": 4,
+        "persuasion": 4,
+        "religion": 4,
+        "sleight_of_hand": -1,
+        "stealth": -1,
+        "survival": 2
+      },
+      "passive_perception": 20,
+      "resistances_and_immunities": {
+        "damage_immunities_display": "",
+        "damage_immunities": [],
+        "damage_resistances_display": "",
+        "damage_resistances": [],
+        "damage_vulnerabilities_display": "",
+        "damage_vulnerabilities": [],
+        "condition_immunities_display": "",
+        "condition_immunities": []
+      },
+      "normal_sight_range": 10560,
+      "darkvision_range": 120,
+      "blindsight_range": null,
+      "tremorsense_range": null,
+      "truesight_range": null,
+      "actions": [
+        {
+          "name": "Detect",
+          "desc": "The aboleth makes a Wisdom (Perception) check.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "LEGENDARY_ACTION",
+          "order_in_statblock": 0,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": null
+        },
+        {
+          "name": "Enslave",
+          "desc": "The aboleth targets one creature it can see within 30 ft. of it. The target must succeed on a DC 14 Wisdom saving throw or be magically charmed by the aboleth until the aboleth dies or until it is on a different plane of existence from the target. The charmed target is under the aboleth's control and can't take reactions, and the aboleth and the target can communicate telepathically with each other over any distance.\nWhenever the charmed target takes damage, the target can repeat the saving throw. On a success, the effect ends. No more than once every 24 hours, the target can also repeat the saving throw when it is at least 1 mile away from the aboleth.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "ACTION",
+          "order_in_statblock": 3,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": {
+            "type": "PER_DAY",
+            "param": 3
+          }
+        },
+        {
+          "name": "Multiattack",
+          "desc": "The aboleth makes three tentacle attacks.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "ACTION",
+          "order_in_statblock": 0,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": null
+        },
+        {
+          "name": "Psychic Drain",
+          "desc": "One creature charmed by the aboleth takes 10 (3d6) psychic damage, and the aboleth regains hit points equal to the damage the creature takes.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "LEGENDARY_ACTION",
+          "order_in_statblock": 2,
+          "legendary_action_cost": 2,
+          "limited_to_form": null,
+          "usage_limits": null
+        },
+        {
+          "name": "Tail",
+          "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 15 (3d6 + 5) bludgeoning damage.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [
+            {
+              "name": "Tail attack",
+              "attack_type": "WEAPON",
+              "to_hit_mod": 9,
+              "reach": 10,
+              "range": null,
+              "long_range": null,
+              "target_creature_only": false,
+              "damage_die_count": 3,
+              "damage_die_type": "D6",
+              "damage_bonus": null,
+              "damage_type": {
+                "name": "Thunder",
+                "key": "thunder"
+              },
+              "extra_damage_die_count": null,
+              "extra_damage_die_type": null,
+              "extra_damage_bonus": null,
+              "extra_damage_type": null,
+              "distance_unit": "feet"
+            }
+          ],
+          "action_type": "ACTION",
+          "order_in_statblock": 2,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": null
+        },
+        {
+          "name": "Tail Swipe",
+          "desc": "The aboleth makes one tail attack.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [],
+          "action_type": "LEGENDARY_ACTION",
+          "order_in_statblock": 1,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": null
+        },
+        {
+          "name": "Tentacle",
+          "desc": "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 12 (2d6 + 5) bludgeoning damage. If the target is a creature, it must succeed on a DC 14 Constitution saving throw or become diseased. The disease has no effect for 1 minute and can be removed by any magic that cures disease. After 1 minute, the diseased creature's skin becomes translucent and slimy, the creature can't regain hit points unless it is underwater, and the disease can be removed only by heal or another disease-curing spell of 6th level or higher. When the creature is outside a body of water, it takes 6 (1d12) acid damage every 10 minutes unless moisture is applied to the skin before 10 minutes have passed.",
+          "crossreferences": {
+            "to": []
+          },
+          "attacks": [
+            {
+              "name": "Tentacle attack",
+              "attack_type": "WEAPON",
+              "to_hit_mod": 9,
+              "reach": 10,
+              "range": null,
+              "long_range": null,
+              "target_creature_only": false,
+              "damage_die_count": 2,
+              "damage_die_type": "D6",
+              "damage_bonus": null,
+              "damage_type": {
+                "name": "Thunder",
+                "key": "thunder"
+              },
+              "extra_damage_die_count": null,
+              "extra_damage_die_type": null,
+              "extra_damage_bonus": null,
+              "extra_damage_type": null,
+              "distance_unit": "feet"
+            }
+          ],
+          "action_type": "ACTION",
+          "order_in_statblock": 1,
+          "legendary_action_cost": 1,
+          "limited_to_form": null,
+          "usage_limits": null
+        }
+      ],
+      "traits": [
+        {
+          "name": "Amphibious",
+          "desc": "The aboleth can breathe air and water."
+        },
+        {
+          "name": "Mucous Cloud",
+          "desc": "While underwater, the aboleth is surrounded by transformative mucus. A creature that touches the aboleth or that hits it with a melee attack while within 5 ft. of it must make a DC 14 Constitution saving throw. On a failure, the creature is diseased for 1d4 hours. The diseased creature can breathe only underwater."
+        },
+        {
+          "name": "Probing Telepathy",
+          "desc": "If a creature communicates telepathically with the aboleth, the aboleth learns the creature's greatest desires if the aboleth can see the creature."
+        }
+      ],
+      "creaturesets": [],
+      "environments": [
+        {
+          "name": "Caves",
+          "key": "caves"
+        },
+        {
+          "name": "Ocean",
+          "key": "ocean"
+        },
+        {
+          "name": "Sewer",
+          "key": "sewer"
+        },
+        {
+          "name": "Plane of Water",
+          "key": "srd_plane-of-water"
+        },
+        {
+          "name": "Underworld",
+          "key": "underworld"
+        }
+      ],
+      "illustration": {
+        "name": "Aboleth",
+        "key": "open5e_aboleth",
+        "file_url": "/static/img/object_illustrations/open5e-illustrations/monsters/aboleth.png",
+        "alt_text": "",
+        "attribution": ""
+      },
+      "crossreferences": {
+        "to": []
+      }
+    }
+  },
+  "Spell": {
+    "srd-2024": {
+      "key": "srd-2024_counterspell",
+      "document": {
+        "name": "System Reference Document 5.2",
+        "key": "srd-2024",
+        "type": "SOURCE",
+        "display_name": "5e 2024 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2024",
+          "key": "5e-2024"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "casting_options": [],
+      "school": {
+        "name": "Abjuration",
+        "key": "abjuration"
+      },
+      "classes": [
+        {
+          "name": "Sorcerer",
+          "key": "srd-2024_sorcerer"
+        },
+        {
+          "name": "Warlock",
+          "key": "srd-2024_warlock"
+        },
+        {
+          "name": "Wizard",
+          "key": "srd-2024_wizard"
+        }
+      ],
+      "range_unit": "feet",
+      "shape_size_unit": "feet",
+      "name": "Counterspell",
+      "desc": "You attempt to interrupt a creature in the process of casting a spell. The creature makes a Constitution saving throw. On a failed save, the spell dissipates with no effect, and the action, Bonus Action, or Reaction used to cast it is wasted. If that spell was cast with a spell slot, the slot isn't expended.",
+      "level": 3,
+      "higher_level": "",
+      "target_type": "creature",
+      "range_text": "60 feet",
+      "range": 60,
+      "ritual": false,
+      "casting_time": "reaction",
+      "reaction_condition": "which you take when you see a creature within 60 feet of yourself casting a spell with Verbal, Somatic, or Material components",
+      "verbal": false,
+      "somatic": true,
+      "material": false,
+      "material_specified": "",
+      "material_cost": null,
+      "material_consumed": false,
+      "target_count": 1,
+      "saving_throw_ability": "constitution",
+      "attack_roll": false,
+      "damage_roll": "",
+      "damage_types": [],
+      "duration": "instantaneous",
+      "shape_type": null,
+      "shape_size": null,
+      "concentration": false,
+      "crossreferences": {
+        "to": []
+      }
+    },
+    "srd-2014": {
+      "key": "srd_counterspell",
+      "document": {
+        "name": "System Reference Document 5.1",
+        "key": "srd-2014",
+        "type": "SOURCE",
+        "display_name": "5e 2014 Rules",
+        "publisher": {
+          "name": "Wizards of the Coast",
+          "key": "wizards-of-the-coast"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2014",
+          "key": "5e-2014"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "casting_options": [
+        {
+          "type": "default",
+          "damage_roll": null,
+          "target_count": null,
+          "duration": null,
+          "range": null,
+          "concentration": null,
+          "shape_size": null,
+          "desc": null
+        }
+      ],
+      "school": {
+        "name": "Abjuration",
+        "key": "abjuration"
+      },
+      "classes": [
+        {
+          "name": "Sorcerer",
+          "key": "srd_sorcerer"
+        },
+        {
+          "name": "Warlock",
+          "key": "srd_warlock"
+        },
+        {
+          "name": "Wizard",
+          "key": "srd_wizard"
+        }
+      ],
+      "range_unit": "feet",
+      "shape_size_unit": "feet",
+      "name": "Counterspell",
+      "desc": "You attempt to interrupt a creature in the process of casting a spell. If the creature is casting a spell of 3rd level or lower, its spell fails and has no effect. If it is casting a spell of 4th level or higher, make an ability check using your spellcasting ability. The DC equals 10 + the spell's level. On a success, the creature's spell fails and has no effect.",
+      "level": 3,
+      "higher_level": "When you cast this spell using a spell slot of 4th level or higher, the interrupted spell has no effect if its level is less than or equal to the level of the spell slot you used.",
+      "target_type": "creature",
+      "range_text": "60 feet",
+      "range": 60,
+      "ritual": false,
+      "casting_time": "reaction",
+      "reaction_condition": "which you take when you see a creature within 60 feet of you casting a spell",
+      "verbal": false,
+      "somatic": true,
+      "material": false,
+      "material_specified": "",
+      "material_cost": null,
+      "material_consumed": false,
+      "target_count": 1,
+      "saving_throw_ability": "",
+      "attack_roll": false,
+      "damage_roll": "",
+      "damage_types": [],
+      "duration": "instantaneous",
+      "shape_type": null,
+      "shape_size": null,
+      "concentration": false,
+      "crossreferences": {
+        "to": []
+      }
+    }
+  },
+  "Condition": [
+    {
+      "key": "blinded",
+      "document": {
+        "name": "5e Core Concepts",
+        "key": "core",
+        "type": "MISC",
+        "display_name": "5e Core",
+        "publisher": {
+          "name": "Open5e",
+          "key": "open5e"
+        },
+        "gamesystem": {
+          "name": "5th Edition 2014",
+          "key": "5e-2014"
+        },
+        "permalink": "https://dnd.wizards.com/resources/systems-reference-document"
+      },
+      "icon": {
+        "name": "Blinded",
+        "key": "elderberry_blinded",
+        "file_url": "/static/img/object_icons/elderberry-inn-icons/conditions/blinded.svg",
+        "alt_text": "An icon representing the blinded condition in an RPG. A simple, abstract black-and-white icon of an eye with a line crossed through it.",
+        "attribution": "Designed with love by Anaislalovi (@anaislalovi) for Elderberry Inn."
+      },
+      "descriptions": [
+        {
+          "desc": "* A blinded creature can’t see and it automatically fails ability checks that require sight.\n\n* Attack rolls against a blinded creature are made with advantage, and the creature’s attack rolls are made with disadvantage.",
+          "document": "a5e-ag",
+          "gamesystem": "a5e"
+        },
+        {
+          "desc": "* A blinded creature can't see and automatically fails any ability check that requires sight.\r\n* Attack rolls against the creature have advantage, and the creature’s attack rolls have disadvantage.",
+          "document": "srd-2014",
+          "gamesystem": "5e-2014"
+        },
+        {
+          "desc": "While you have the Blinded condition, you experience the following effects.\n * Can’t See. You can’t see and automatically fail any ability check that requires sight.\n * Attacks Affected. Attack rolls against you have Advantage, and your attack rolls have Disadvantage.",
+          "document": "srd-2024",
+          "gamesystem": "5e-2024"
+        }
+      ],
+      "name": "Blinded"
+    }
+  ]
+}

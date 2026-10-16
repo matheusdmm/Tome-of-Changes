@@ -131,10 +131,10 @@ describe('computeDiff', () => {
     const diffs = computeDiff('Creature', a, b)
     expect(diffs.some(d => d.includes('CR'))).toBe(true)
   })
-  it('returns minor wording message when nothing changed', () => {
+  it('reports unchanged compared fields when nothing changed', () => {
     const a = { level: 1, casting_time: '1 action', duration: 'Instantaneous', range: '60 feet', school: 'Evocation', desc: 'Same text here' }
     const b = { level: 1, casting_time: '1 action', duration: 'Instantaneous', range: '60 feet', school: 'Evocation', desc: 'Same text here' }
     const diffs = computeDiff('Spell', a, b)
-    expect(diffs[0]).toBe('Minor wording/formatting updates only')
+    expect(diffs[0]).toBe('No changes detected in the compared fields.')
   })
 })

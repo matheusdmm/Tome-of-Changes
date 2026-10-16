@@ -1,13 +1,13 @@
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+COPY --from=oven/bun:1.4.2-alpine /usr/local/bin/bun /usr/local/bin/bun
 
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
 COPY . .
-RUN pnpm build
+RUN bun run build
 
 FROM nginx:alpine AS serve
 

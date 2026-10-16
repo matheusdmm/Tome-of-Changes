@@ -1,12 +1,8 @@
-import { ref, watch } from 'vue'
+import { createStoredState, validEntry } from './useStorage.js'
 
 const STORAGE_KEY = 'tome-favorites'
 
-const favorites = ref(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'))
-
-watch(favorites, val => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
-}, { deep: true })
+const { state: favorites, reset: resetFavorites } = createStoredState(STORAGE_KEY, [], value => Array.isArray(value) && value.every(validEntry))
 
 export function useFavorites() {
   function isFavorite(entry) {
@@ -16,11 +12,11 @@ export function useFavorites() {
   function toggleFavorite(entry) {
     const idx = favorites.value.findIndex(f => f.category === entry.category && f.name === entry.name)
     if (idx === -1) {
-      favorites.value = [...favorites.value, entry]
+      favorites.value = [...favorites.value, { ...entry, savedAt: new Date().toISOString() }]
     } else {
       favorites.value = favorites.value.filter((_, i) => i !== idx)
     }
   }
 
-  return { favorites, isFavorite, toggleFavorite }
+  return { favorites, isFavorite, toggleFavorite, resetFavorites }
 }

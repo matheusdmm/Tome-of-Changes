@@ -1,5 +1,5 @@
 <template>
-  <span class="italic text-base leading-[1.8] text-parchment/80">
+  <span class="whitespace-pre-wrap italic text-base leading-[1.8] text-parchment/90">
     <span
       v-for="(token, i) in tokens"
       :key="i"
@@ -13,12 +13,11 @@
 
 <script setup>
 import { computed } from 'vue'
-import { wordDiff } from '../composables/useOpen5e.js'
 
-const props = defineProps({ textA: String, textB: String, side: String })
+const props = defineProps({ tokens: { type: Array, default: () => [] }, side: String })
 
 const tokens = computed(() => {
-  const all = wordDiff(props.textA || '', props.textB || '')
+  const all = props.tokens
   if (props.side === 'a') return all.filter(t => t.type !== 'added')
   if (props.side === 'b') return all.filter(t => t.type !== 'removed')
   return all
