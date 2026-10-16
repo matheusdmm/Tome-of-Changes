@@ -7,11 +7,13 @@ export const routes = [
   { path: '/favorites', name: 'favorites', component: () => import('../views/FavoritesView.vue') },
   { path: '/whats-new', name: 'whats-new', component: () => import('../views/WhatsNewView.vue') },
   { path: '/attribution', name: 'attribution', component: () => import('../views/AttributionView.vue') },
+  { path: '/browse', redirect: '/browse/Spell' },
+  { path: '/browse/:category', name: 'browse', component: () => import('../views/SearchView.vue') },
   { path: '/compare/:category/:query(.*)', name: 'compare', component: () => import('../views/SearchView.vue') },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('../views/NotFoundView.vue') },
 ]
 export function validateCategory(to) {
-  if (to.name === 'compare' && !Object.hasOwn(CATEGORIES, to.params.category)) return { name: 'not-found', params: { pathMatch: to.path.slice(1).split('/') }, replace: true }
+  if (['compare', 'browse'].includes(to.name) && !Object.hasOwn(CATEGORIES, to.params.category)) return { name: 'not-found', params: { pathMatch: to.path.slice(1).split('/') }, replace: true }
   return true
 }
 const router = createRouter({ history: createWebHistory(), routes, scrollBehavior: () => ({ top: 0 }) })

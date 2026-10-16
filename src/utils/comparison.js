@@ -39,8 +39,9 @@ export function normalizeRecord(category, raw) {
   if (category === 'Spell') {
     const options = (raw.casting_options || []).map(option => {
       const details = Object.entries(option).filter(([key, value]) => !['name', 'type'].includes(key) && value != null && value !== '')
-        .map(([key, value]) => `${key.replaceAll('_', ' ')}: ${value}`).join('; ')
-      return { name: option.name || option.type || 'Option', desc: details }
+        .map(([key, value]) => key === 'desc' ? value : `${key.replaceAll('_', ' ')}: ${value}`).join('; ')
+      const type = String(option.type || 'Option').replace(/^slot_level_(\d+)$/, 'Spell slot level $1').replaceAll('_', ' ')
+      return { name: option.name || type, desc: details }
     }).filter(option => option.desc)
     sections.push(textSection('Casting options', options))
   }

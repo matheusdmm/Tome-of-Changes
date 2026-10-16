@@ -19,6 +19,7 @@
           <div class="flex flex-col gap-2.5">
             <p class="text-[10px] text-parchment/80 uppercase tracking-widest mb-1">App</p>
             <RouterLink to="/" class="text-parchment/80 hover:text-gold transition-colors">Home</RouterLink>
+            <RouterLink to="/browse/Spell" class="text-parchment/80 hover:text-gold transition-colors">Browse</RouterLink>
             <RouterLink to="/conditions" class="text-parchment/80 hover:text-gold transition-colors">Conditions</RouterLink>
             <RouterLink to="/favorites" class="text-parchment/80 hover:text-gold transition-colors">Favorites</RouterLink>
             <RouterLink to="/whats-new" class="text-parchment/80 hover:text-gold transition-colors">What Changed</RouterLink>

@@ -6,8 +6,12 @@ A browser app for comparing D&D 5e SRD rules from 2014 and 2024. Built with Vue 
 
 - Search spells, feats, conditions, creatures, magic items, and species.
 - Compare rules text and statistics, with additions and removals highlighted.
+- View each edition's source and switch between full text and changes only.
+- Browse without a name and filter spells by level or school, creatures by CR or type, and entries by comparison status.
 - Browse conditions and read sourced notes about the 2024 rules.
 - Save favorites and session notes in your browser.
+- Organize saved entries into campaign or character collections with notes and review checklists.
+- Export and restore favorites, notes, and collections with a JSON backup.
 - Share searches by URL.
 - Light and dark themes.
 
@@ -49,6 +53,8 @@ Open [localhost:8080](http://localhost:8080).
 ## Saved data
 
 Favorites store a snapshot of the rules when saved. Notes, recent entries, and theme preferences are also stored locally. Delete saved browser data from the Privacy page.
+
+Use Favorites to manage collections and download backups of the full library or a selected collection. Imports show a preview before applying changes. Merge keeps current values by default; you can choose imported values for conflicts or replace the saved library. Backups can include saved rules text or just entry references. Backup files contain personal notes.
 
 ## Data and licensing
 

@@ -15,5 +15,8 @@ export function aliasesFor(category, name) {
   return alias?.names || [name]
 }
 export function entrySlug(category, name) { return canonicalName(category, name) }
-export function entryKey(entry) { return `${entry.category}-${entry.slug || entrySlug(entry.category, entry.name)}` }
+export function entryKey(entry) {
+  const legacySourceId = [entry.v2014?.key, entry.v2024?.key].filter(Boolean).includes(entry.slug)
+  return `${entry.category}-${!entry.slug || legacySourceId ? entrySlug(entry.category, entry.name) : entry.slug}`
+}
 export function comparisonPath(entry) { return `/compare/${encodeURIComponent(entry.category)}/${encodeURIComponent(entry.name)}` }

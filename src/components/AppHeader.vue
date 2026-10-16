@@ -3,6 +3,7 @@
 
     <!-- Desktop nav -->
     <div class="hidden sm:flex absolute top-4 left-4 items-center gap-2">
+      <RouterLink to="/browse/Spell" class="font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 text-parchment/80 hover:text-gold">Browse</RouterLink>
       <RouterLink
         to="/favorites"
         class="font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-1 px-3 border border-gold/40 rounded-[1px] text-parchment/80 transition-all duration-200 hover:border-gold hover:text-gold"
@@ -39,6 +40,7 @@
         class="absolute top-full left-0 mt-1 flex flex-col z-50 border border-gold/30 rounded-[2px] overflow-hidden"
         style="background: var(--color-surface, #1a1410);"
       >
+        <RouterLink to="/browse/Spell" class="font-cinzel text-[0.6rem] tracking-[0.1em] uppercase py-2 px-4 border-b border-gold/20 text-parchment/80 hover:text-gold">Browse</RouterLink>
         <RouterLink
           to="/favorites"
           @click="isMenuOpen = false"

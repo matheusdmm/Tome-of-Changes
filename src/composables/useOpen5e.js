@@ -90,10 +90,10 @@ export async function fetchAllConditions({ signal } = {}) {
   return mapConditions(data.results)
 }
 
-export async function searchEntries(category, name, { signal } = {}) {
+export async function searchEntries(category, name, { signal, browse = false } = {}) {
   if (!Object.hasOwn(CATEGORIES, category)) throw new Error('Choose a supported category.')
   const needle = name.trim()
-  if (!needle) return { entries: [], warnings: [] }
+  if (!needle && !browse) return { entries: [], warnings: [] }
   if (category === 'Condition') {
     const entries = (await fetchAllConditions({ signal })).filter(c => c.name.toLowerCase().includes(needle.toLowerCase()))
     return { entries, warnings: [] }

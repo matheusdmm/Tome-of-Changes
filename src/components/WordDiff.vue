@@ -5,7 +5,8 @@
       :key="i"
       :class="{
         'bg-crimson/30 text-[var(--color-diff-removed)] line-through rounded-sm px-px': token.type === 'removed',
-        'bg-v2024/20 text-[var(--color-diff-added)] rounded-sm px-px': token.type === 'added',
+        'bg-v2024/20 text-[var(--color-diff-added)] underline rounded-sm px-px': token.type === 'added',
+        'not-italic block my-3 text-sm text-parchment/80': token.type === 'omitted',
       }"
     >{{ token.text }}</span>
   </span>

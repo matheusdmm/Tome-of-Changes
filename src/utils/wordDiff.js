@@ -32,3 +32,21 @@ export function groupDiffTokens(tokens) {
   }
   return groups
 }
+
+// Keep the same token stream for both columns so changed passages stay aligned.
+export function changedPassages(tokens, contextWords = 12) {
+  const output = []
+  const hasChanges = tokens.some(t => t.type !== 'same')
+  if (!hasChanges) return output
+  for (let index = 0; index < tokens.length; index++) {
+    const token = tokens[index]
+    if (token.type !== 'same') { output.push(token); continue }
+    const parts = token.text.match(/\S+\s*|\s+/g) || []
+    const before = index > 0, after = index < tokens.length - 1
+    if (parts.length <= contextWords * (Number(before) + Number(after))) { output.push(token); continue }
+    if (before) output.push({ text: parts.slice(0, contextWords).join(''), type: 'same' })
+    output.push({ text: '\n[Unchanged text hidden]\n', type: 'omitted' })
+    if (after) output.push({ text: parts.slice(-contextWords).join(''), type: 'same' })
+  }
+  return output
+}

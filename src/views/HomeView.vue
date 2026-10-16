@@ -2,6 +2,7 @@
   <div class="flex-1 flex flex-col justify-center">
     <FactCard />
     <SearchBar v-model="query" v-model:category="category" @submit="submit" />
+    <RouterLink to="/browse/Spell" class="text-center text-parchment/90 underline">Browse without a name</RouterLink>
     <div
       v-if="!query"
       class="text-center font-cinzel text-[0.7rem] text-parchment/80 tracking-[0.15em] uppercase mt-4"

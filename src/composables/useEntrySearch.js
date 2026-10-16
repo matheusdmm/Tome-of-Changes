@@ -6,15 +6,15 @@ export function useEntrySearch() {
   let controller, sequence = 0
   function cancel() { sequence++; controller?.abort(); loading.value = false }
   function clear() { cancel(); results.value = []; warnings.value = []; error.value = '' }
-  async function run(category, query, retry = false) {
+  async function run(category, query, retry = false, browse = false) {
     clear()
-    if (!query.trim()) return
+    if (!query.trim() && !browse) return
     if (retry) clearApiCache()
     controller = new AbortController()
     const id = sequence
     loading.value = true
     try {
-      const data = await searchEntries(category, query, { signal: controller.signal })
+      const data = await searchEntries(category, query, { signal: controller.signal, browse })
       if (id !== sequence) return
       results.value = data.entries
       warnings.value = data.warnings

@@ -26,5 +26,5 @@ export function useNotes() {
     }
   }
 
-  return { getNote, saveNote, resetNotes }
+  return { notes, getNote, saveNote, resetNotes }
 }

@@ -35,7 +35,7 @@ export function createStoredState(key, initial, validate) {
     try { localStorage.removeItem(key) }
     catch { storageError.value = 'Saved data could not be deleted from browser storage. Check browser permissions and retry.' }
   }
-  stores.set(key, { receive, reset })
+  stores.set(key, { receive, reset, validate })
   return { state, reset }
 }
 
@@ -49,6 +49,32 @@ export function resetStoredData() {
   storageError.value = ''
   for (const store of stores.values()) store.reset()
   return !storageError.value
+}
+
+export function applyStoredBatch(data) {
+  const previous = new Map(), encoded = new Map(), written = []
+  storageError.value = ''
+  try {
+    for (const [key, value] of Object.entries(data)) {
+      if (!stores.get(key)?.validate(value)) throw new Error('Invalid import data')
+      previous.set(key, localStorage.getItem(key))
+      encoded.set(key, JSON.stringify({ version: 1, data: value }))
+    }
+    // Publish reactive changes only after all persistent writes succeed.
+    for (const [key, value] of encoded) { localStorage.setItem(key, value); written.push(key) }
+  } catch {
+    let rollbackFailed = false
+    for (const key of written.reverse()) {
+      try { const old = previous.get(key); if (old == null) localStorage.removeItem(key); else localStorage.setItem(key, old) }
+      catch { rollbackFailed = true }
+    }
+    storageError.value = rollbackFailed
+      ? 'Import failed and browser storage could not be restored completely. Keep your backup file and retry after checking storage permissions.'
+      : 'Import could not be saved. Existing data was preserved. Browser storage may be blocked or full.'
+    return false
+  }
+  for (const [key, value] of encoded) stores.get(key).receive(value)
+  return true
 }
 
 export const validEntry = value => value && typeof value.name === 'string' && typeof value.slug === 'string'

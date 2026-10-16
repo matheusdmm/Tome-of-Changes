@@ -30,15 +30,27 @@
           :class="noteText ? 'border-gold/60 text-gold hover:border-gold' : 'border-gold/40 text-parchment/80 hover:border-gold hover:text-gold'"
         >✎ Note{{ noteText ? ' ●' : '' }}</button>
       </div>
+      <CollectionPicker :entry="entry" />
     </div>
 
     <div class="px-4 sm:px-6 py-2 text-sm text-parchment/80" aria-live="polite">
       <p v-if="isSnapshot">Saved snapshot ({{ savedDate }}). <RouterLink :to="comparisonPath(entry)" class="underline">Search current source data</RouterLink></p>
       <p v-if="copyError" role="alert">{{ copyError }}</p>
+      <div v-if="confirmFavoriteRemoval" class="my-3 border border-gold/40 p-3 space-y-2">
+        <p>Remove this entry from Favorites and all {{ membershipCount }} collections? Its session note will be kept.</p>
+        <button class="underline mr-4" @click="removeFavorite">Confirm removal</button><button class="underline" @click="confirmFavoriteRemoval = false">Cancel removal</button>
+      </div>
+      <p>{{ comparisonStatus }}</p>
+      <div class="flex flex-wrap gap-3 mt-3" role="group" aria-label="Comparison reading mode">
+        <button :aria-pressed="!changesOnly" class="border px-2 py-1" :class="!changesOnly ? 'bg-gold/15 border-gold text-gold-bright' : 'border-gold/40'" @click="changesOnly = false">Full comparison</button>
+        <button :aria-pressed="changesOnly" class="border px-2 py-1" :class="changesOnly ? 'bg-gold/15 border-gold text-gold-bright' : 'border-gold/40'" @click="changesOnly = true">Changes only</button>
+      </div>
+      <p class="mt-2"><span class="line-through">Removed text</span> · <span class="underline">Added text</span>. Highlights show text edits, not a rules interpretation.</p>
+      <p v-if="changesOnly && a && b && !displayTokens.length" class="mt-2">No description changes. Any changed statistics are shown below.</p>
     </div>
     <!-- Stats table (full-width) -->
-    <div v-if="statRows.length" class="px-4 sm:px-6 pt-4 pb-1">
-      <StatsTable :rows="statRows" />
+    <div v-if="displayRows.length" class="px-4 sm:px-6 pt-4 pb-1">
+      <StatsTable :rows="displayRows" />
     </div>
 
     <!-- Description comparison (two columns) -->
@@ -50,8 +62,9 @@
           <span class="w-[6px] h-[6px] rounded-full shrink-0 bg-v2014" />
           2014 Edition
         </div>
+        <SourceDetails :record="a" />
         <template v-if="a">
-          <WordDiff v-if="b" :tokens="tokens" side="a" />
+          <WordDiff v-if="b" :tokens="displayTokens" side="a" />
           <p v-else class="whitespace-pre-wrap text-parchment/80 text-base leading-[1.8] italic">{{ a.comparisonText }}</p>
         </template>
         <div v-else class="font-cinzel text-sm text-parchment/80 py-4 text-center italic">{{ missingEdition("v2014") }}</div>
@@ -63,8 +76,9 @@
           <span class="w-[6px] h-[6px] rounded-full shrink-0 bg-v2024" />
           2024 Edition
         </div>
+        <SourceDetails :record="b" />
         <template v-if="b">
-          <WordDiff v-if="a" :tokens="tokens" side="b" />
+          <WordDiff v-if="a" :tokens="displayTokens" side="b" />
           <p v-else class="whitespace-pre-wrap text-parchment/80 text-base leading-[1.8] italic">{{ b.comparisonText }}</p>
         </template>
         <div v-else class="font-cinzel text-sm text-parchment/80 py-4 text-center italic">{{ missingEdition("v2024") }}</div>
@@ -98,17 +112,22 @@
 </template>
 
 <script setup>
-import { ref, computed, useId, onUnmounted } from 'vue'
+import { ref, computed, useId, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { track } from '@vercel/analytics'
 import WordDiff from './WordDiff.vue'
 import StatsTable from './StatsTable.vue'
+import SourceDetails from './SourceDetails.vue'
+import CollectionPicker from './CollectionPicker.vue'
 import { CATEGORIES, normalizeRecord, statRows as buildStatRows, computeDiff, wordDiff } from '../composables/useOpen5e.js'
 import { useFavorites } from '../composables/useFavorites.js'
 import { useNotes } from '../composables/useNotes.js'
 import { useRecentlyViewed } from '../composables/useRecentlyViewed.js'
-import { comparisonPath } from '../utils/entryIdentity.js'
-import { groupDiffTokens } from '../utils/wordDiff.js'
+import { useCollections } from '../composables/useCollections.js'
+import { comparisonPath, entryKey } from '../utils/entryIdentity.js'
+import { groupDiffTokens, changedPassages } from '../utils/wordDiff.js'
+import { sourceDetails } from '../utils/sourceDetails.js'
+import { changeStatus } from '../utils/entryFilters.js'
 
 const props = defineProps({ entry: { type: Object, required: true } })
 const route = useRoute()
@@ -116,8 +135,13 @@ const copied = ref(false), copiedLLM = ref(false), copyError = ref('')
 const { isFavorite, toggleFavorite: changeFavorite } = useFavorites()
 const { getNote, saveNote } = useNotes()
 const { addRecentlyViewed } = useRecentlyViewed()
+const { collections, contains } = useCollections()
+const confirmFavoriteRemoval = ref(false)
+const membershipCount = computed(() => collections.value.filter(c => contains(c.id, props.entry)).length)
+watch(() => entryKey(props.entry), () => { confirmFavoriteRemoval.value = false })
 const noteId = useId()
 const noteOpen = ref(false)
+const changesOnly = ref(false)
 // Write immediately: navigation, reload and deletion cannot leave a delayed save behind.
 const noteText = computed({ get: () => getNote(props.entry), set: value => saveNote(props.entry, value) })
 const a = computed(() => normalizeRecord(props.entry.category, props.entry.v2014))
@@ -125,12 +149,19 @@ const b = computed(() => normalizeRecord(props.entry.category, props.entry.v2024
 const statRows = computed(() => buildStatRows(props.entry.category, a.value, b.value))
 const diffs = computed(() => a.value && b.value ? computeDiff(props.entry.category, a.value, b.value) : [])
 const tokens = computed(() => groupDiffTokens(wordDiff(a.value?.comparisonText, b.value?.comparisonText)))
+const displayTokens = computed(() => changesOnly.value ? changedPassages(tokens.value) : tokens.value)
+const displayRows = computed(() => changesOnly.value && a.value && b.value ? statRows.value.filter(row => row.changed) : statRows.value)
+const comparisonStatus = computed(() => {
+  if (!a.value || !b.value) return 'A complete edition comparison is not available for this entry.'
+  return changeStatus(props.entry) === 'unchanged' ? 'No changes detected in the compared fields.' : 'Both editions available. Changes detected in the compared fields.'
+})
 const isSnapshot = computed(() => route.name === 'favorites')
 const savedDate = computed(() => {
   const date = props.entry.savedAt || props.entry.fetchedAt
   return date ? new Date(date).toLocaleDateString() : 'date unknown'
 })
 function missingEdition(edition) {
+  if (props.entry.referenceOnly) return 'Rules text was not included in this backup. Open current source data to load this entry.'
   const state = props.entry.availability?.[edition]
   if (state === 'unavailable') return 'Source unavailable. Retry the search to compare this edition.'
   if (state === 'incomplete') return 'Source results are incomplete. Try a more specific name.'
@@ -140,8 +171,13 @@ function missingEdition(edition) {
 function rememberEntry() { addRecentlyViewed(props.entry) }
 function toggleFavorite(entry) {
   const adding = !isFavorite(entry)
+  if (!adding && membershipCount.value) { confirmFavoriteRemoval.value = true; return }
   changeFavorite(entry)
   track('favorite', { category: entry.category, action: adding ? 'add' : 'remove' })
+}
+function removeFavorite() {
+  if (isFavorite(props.entry)) changeFavorite(props.entry)
+  confirmFavoriteRemoval.value = false
 }
 let copiedTimer, promptTimer
 async function copyText(text, prompt = false) {
@@ -165,7 +201,8 @@ function copyForLLM() {
   for (const r of statRows.value) lines.push(r.label + ': ' + r.v14 + ' (2014) → ' + r.v24 + ' (2024)')
   for (const [edition, record] of [['2014', a.value], ['2024', b.value]]) {
     lines.push(edition + ':', record?.comparisonText || missingEdition('v' + edition))
-    if (record?.document) lines.push('Fonte: ' + record.document.name + ' (' + record.document.key + ')')
+    const source = sourceDetails(record)
+    if (source) lines.push('Fonte: ' + source.name + ' (' + source.version + ')', source.url || '')
   }
   lines.push(...diffs.value, 'Diferencie mudanças observadas de interpretações. Não conclua que uma regra foi removida quando não há dados suficientes.')
   return copyText(lines.join('\n'), true)
