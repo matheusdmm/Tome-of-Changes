@@ -9,7 +9,7 @@
     </section>
     <section class="space-y-3">
       <h3 class="font-cinzel text-gold-bright">Usage analytics</h3>
-      <p>The app includes Vercel Analytics for page views and search, favorite, sharing, and AI-prompt events. Custom events contain categories, counts, or actions, rather than note text or entry names. Page-view URLs can contain the searched rule name, filter choices, or a collection's identifier. The service receives browser/network metadata; see <a class="underline" href="https://vercel.com/docs/analytics/privacy-policy" target="_blank" rel="noopener noreferrer">Vercel's analytics privacy information</a>. Analytics collection depends on the deployment's Vercel configuration.</p>
+      <p>The deployed site uses self-hosted Umami for usage analytics. Page-view URLs can contain the searched rule name, filter choices, or a collection's identifier. Analytics collection depends on the deployment's Umami configuration. Your saved favorites, session notes, and collection notes are not uploaded by the app.</p>
     </section>
     <section class="space-y-3">
       <h3 class="font-cinzel text-gold-bright">Other external requests</h3>

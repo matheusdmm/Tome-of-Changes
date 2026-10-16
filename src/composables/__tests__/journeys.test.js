@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-vi.mock('@vercel/analytics', () => ({ track: vi.fn() }))
 let app, host
 const flush = async () => { for (let i = 0; i < 4; i++) await new Promise(resolve => setTimeout(resolve, 0)) }
 beforeEach(() => { localStorage.clear(); vi.resetModules(); document.head.innerHTML = '<link rel="canonical"><meta name="robots"><meta property="og:url">' })

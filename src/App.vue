@@ -9,12 +9,10 @@
     </div>
     <AppFooter />
   </div>
-  <Analytics />
 </template>
 
 <script setup>
 import { storageError } from './composables/useStorage.js'
-import { Analytics } from '@vercel/analytics/vue'
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
 </script>
