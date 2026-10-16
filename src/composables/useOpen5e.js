@@ -1,236 +1,146 @@
+import { normalizeRecord, computeDiff } from '../utils/comparison.js'
+import { canonicalName, entrySlug, aliasesFor } from '../utils/entryIdentity.js'
+
+export { normalizeRecord, computeDiff, statRows, schoolName, spellLevel, speciesSize, speciesSpeed } from '../utils/comparison.js'
+export { wordDiff } from '../utils/wordDiff.js'
+
 const BASE = 'https://api.open5e.com'
+const cache = new Map()
+const CACHE_MS = 5 * 60 * 1000
+const MAX_PAGES = 10
 
-export const CATEGORIES = {
-  Spell:     { endpoint: 'v2/spells',     label: 'Spells',      docField: 'document__key__in', doc14: 'srd-2014', doc24: 'srd-2024' },
-  Condition: { endpoint: 'v2/conditions', label: 'Conditions',  docField: 'document__key__in', doc14: 'srd-2014', doc24: 'srd-2024' },
-  Feat:      { endpoint: 'v2/feats',      label: 'Feats',       docField: 'document__key__in', doc14: 'srd-2014', doc24: 'srd-2024' },
-  Creature:  { endpoint: 'v2/creatures',  label: 'Creatures',   docField: 'document__key__in', doc14: 'srd-2014', doc24: 'srd-2024' },
-  MagicItem: { endpoint: 'v2/magicitems', label: 'Magic Items', docField: 'document__key__in', doc14: 'srd-2014', doc24: 'srd-2024' },
-  Race:      { endpoint: 'v2/species',    label: 'Species',     docField: 'document__key__in', doc14: 'srd-2014', doc24: 'srd-2024' },
+export const CATEGORIES = Object.fromEntries([
+  ['Spell', 'spells', 'Spells'], ['Condition', 'conditions', 'Conditions'],
+  ['Feat', 'feats', 'Feats'], ['Creature', 'creatures', 'Creatures'],
+  ['MagicItem', 'magicitems', 'Magic Items'], ['Race', 'species', 'Species'],
+].map(([key, endpoint, label]) => [key, { endpoint: `v2/${endpoint}`, label }]))
+
+export function clearApiCache() { cache.clear() }
+
+async function fetchPages(url, signal) {
+  signal?.throwIfAborted()
+  const cached = cache.get(url)
+  if (cached && Date.now() - cached.time < CACHE_MS) return cached.data
+  const controller = new AbortController()
+  const abort = () => controller.abort(signal.reason)
+  signal?.addEventListener('abort', abort, { once: true })
+  const timer = setTimeout(() => controller.abort(new Error('Open5e request timed out. Please retry.')), 15000)
+  try {
+    let next = url
+    const results = []
+    const visited = new Set()
+    while (next && visited.size < MAX_PAGES) {
+      const parsed = new URL(next, BASE)
+      if (parsed.origin !== BASE || !parsed.pathname.startsWith('/v2/')) throw new Error('Invalid Open5e pagination link.')
+      next = parsed.href
+      if (visited.has(next)) throw new Error('Open5e repeated a results page. Please retry.')
+      visited.add(next)
+      const response = await fetch(next, { signal: controller.signal })
+      if (!response.ok) throw new Error(`Open5e returned HTTP ${response.status}. Please retry.`)
+      const data = await response.json()
+      if (!Array.isArray(data.results)) throw new Error('Open5e returned an unexpected response. Please retry.')
+      results.push(...data.results)
+      next = data.next || null
+    }
+    const data = { results, complete: !next }
+    if (data.complete) {
+      if (cache.size >= 30) cache.delete(cache.keys().next().value)
+      cache.set(url, { time: Date.now(), data })
+    }
+    return data
+  } catch (error) {
+    if (controller.signal.aborted) throw controller.signal.reason
+    throw error
+  } finally {
+    clearTimeout(timer)
+    signal?.removeEventListener('abort', abort)
+  }
 }
 
-async function fetchByName(endpoint, name, docField, docKey) {
-  const docFilter = docKey ? `&${docField}=${docKey}` : ''
-  const url = `${BASE}/${endpoint}/?name__icontains=${encodeURIComponent(name)}${docFilter}&limit=10`
-  const r = await fetch(url)
-  if (!r.ok) return []   // 4xx/5xx → no results, not a crash
-  const d = await r.json()
-  return d.results || []
+function makeEntry(category, a, b, availability = {}) {
+  const v2014 = normalizeRecord(category, a), v2024 = normalizeRecord(category, b)
+  const base = v2014 || v2024
+  return {
+    slug: entrySlug(category, base.name), name: base.name, category, v2014, v2024,
+    availability: { v2014: a ? 'found' : 'not-found', v2024: b ? 'found' : 'not-found', ...availability },
+    fetchedAt: new Date().toISOString(), diffs: a && b ? computeDiff(category, v2014, v2024) : [],
+  }
 }
 
-// Conditions use a different API shape: one entry per condition with a
-// `descriptions` array keyed by document, instead of separate per-edition entries.
-export async function fetchAllConditions() {
-  const url = `${BASE}/v2/conditions/?limit=100`
-  const r = await fetch(url)
-  if (!r.ok) return []
-  const d = await r.json()
-
-  return (d.results || [])
-    .map(condition => {
-      const raw14 = condition.descriptions?.find(x => x.document === 'srd-2014')
-      const raw24 = condition.descriptions?.find(x => x.document === 'srd-2024')
-      if (!raw14 && !raw24) return null
-      const v2014 = raw14 ? { name: condition.name, desc: raw14.desc } : null
-      const v2024 = raw24 ? { name: condition.name, desc: raw24.desc } : null
-      return {
-        slug:  condition.key,
-        name:  condition.name,
-        category: 'Condition',
-        v2014,
-        v2024,
-        diffs: (v2014 && v2024) ? computeDiff('Condition', v2014, v2024) : [],
-      }
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.name.localeCompare(b.name))
+export function mapConditions(results) {
+  const grouped = new Map()
+  for (const condition of results) {
+    const name = canonicalName('Condition', condition.name)
+    if (!name) continue
+    const pair = grouped.get(name) || [null, null]
+    for (const [index, doc] of ['srd-2014', 'srd-2024'].entries()) {
+      const description = condition.descriptions?.find(d => (d.document?.key || d.document) === doc)
+      if (description) pair[index] = { key: `${doc}_${name}`, name: condition.name, desc: description.desc,
+        document: { key: doc, name: `System Reference Document ${index ? '5.2' : '5.1'}` } }
+    }
+    grouped.set(name, pair)
+  }
+  return [...grouped.values()].filter(([a, b]) => a || b)
+    .map(([a, b]) => makeEntry('Condition', a, b)).sort((a, b) => a.name.localeCompare(b.name))
 }
 
-async function searchConditions(name) {
-  const url = `${BASE}/v2/conditions/?limit=100`
-  const r = await fetch(url)
-  if (!r.ok) return []
-  const d = await r.json()
-  const needle = name.toLowerCase()
-  return (d.results || [])
-    .filter(condition => condition.name.toLowerCase().includes(needle))
-    .map(condition => {
-      const raw14 = condition.descriptions?.find(x => x.document === 'srd-2014')
-      const raw24 = condition.descriptions?.find(x => x.document === 'srd-2024')
-      if (!raw14 && !raw24) return null
-      const v2014 = raw14 ? { name: condition.name, desc: raw14.desc } : null
-      const v2024 = raw24 ? { name: condition.name, desc: raw24.desc } : null
-      return {
-        slug:  condition.key,
-        name:  condition.name,
-        category: 'Condition',
-        v2014,
-        v2024,
-        diffs: (v2014 && v2024) ? computeDiff('Condition', v2014, v2024) : [],
-      }
-    })
-    .filter(Boolean)
+export async function fetchAllConditions({ signal } = {}) {
+  const data = await fetchPages(`${BASE}/v2/conditions/?limit=100`, signal)
+  if (!data.complete) throw new Error('The conditions list was incomplete. Please retry.')
+  return mapConditions(data.results)
 }
 
-export async function searchEntries(category, name) {
-  if (category === 'Condition') return searchConditions(name)
-  const cat = CATEGORIES[category]
-  if (!cat) throw new Error(`Unknown category: ${category}`)
-  const { endpoint: ep, docField, doc14, doc24 } = cat
-
-  const [r2014, r2024, rAll] = await Promise.all([
-    fetchByName(ep, name, docField, doc14),
-    fetchByName(ep, name, docField, doc24),
-    fetchByName(ep, name, docField, ''),
-  ])
-
-  // Fallback: if filtered result empty, match from unfiltered pool by doc key
-  const fill = (filtered, all, frag) =>
-    filtered.length ? filtered : all.filter(x => x.document?.key?.includes(frag))
-
-  const res14 = fill(r2014, rAll, '2014')
-  const res24 = fill(r2024, rAll, '2024')
-
-  const map14 = Object.fromEntries(res14.map(x => [x.name.toLowerCase(), x]))
-  const map24 = Object.fromEntries(res24.map(x => [x.name.toLowerCase(), x]))
-  const names = new Set([...Object.keys(map14), ...Object.keys(map24)])
-
-  return [...names].map(n => {
-    const v2014 = map14[n] ? normalizeSpecies(map14[n]) : null
-    const v2024 = map24[n] ? normalizeSpecies(map24[n]) : null
-    const base  = v2014 || v2024
-    return {
-      slug:     base.key || base.slug || n,
-      name:     base.name,
-      category,
-      v2014,
-      v2024,
-      diffs:    (v2014 && v2024) ? computeDiff(category, v2014, v2024) : [],
+export async function searchEntries(category, name, { signal, browse = false } = {}) {
+  if (!Object.hasOwn(CATEGORIES, category)) throw new Error('Choose a supported category.')
+  const needle = name.trim()
+  if (!needle && !browse) return { entries: [], warnings: [] }
+  if (category === 'Condition') {
+    const entries = (await fetchAllConditions({ signal })).filter(c => c.name.toLowerCase().includes(needle.toLowerCase()))
+    return { entries, warnings: [] }
+  }
+  const endpoint = CATEGORIES[category].endpoint
+  const names = aliasesFor(category, needle)
+  const settled = await Promise.allSettled(['srd-2014', 'srd-2024'].map(async doc => {
+    const pages = await Promise.all(names.map(query => fetchPages(`${BASE}/${endpoint}/?name__icontains=${encodeURIComponent(query)}&document__key__in=${doc}&limit=100`, signal)))
+    return { results: pages.flatMap(p => p.results).filter(r => r.document?.key === doc), complete: pages.every(p => p.complete) }
+  }))
+  signal?.throwIfAborted()
+  if (settled.every(r => r.status === 'rejected')) throw settled[0].reason
+  const warnings = []
+  const coverage = settled.map((r, i) => {
+    if (r.status === 'rejected') { warnings.push(`${i ? '2024' : '2014'} source unavailable. Retry to complete the comparison.`); return 'unavailable' }
+    if (!r.value.complete) { warnings.push('Results are limited to the first 1,000 entries per source. Use a more specific name.'); return 'incomplete' }
+    return 'not-found'
+  })
+  const buckets = new Map()
+  settled.forEach((result, edition) => {
+    if (result.status !== 'fulfilled') return
+    const seen = new Set()
+    for (const record of result.value.results) {
+      if (!record.key || !record.name || seen.has(record.key)) continue
+      seen.add(record.key)
+      const key = canonicalName(category, record.name)
+      const bucket = buckets.get(key) || [[], []]
+      bucket[edition].push(record)
+      buckets.set(key, bucket)
     }
   })
-}
-
-// For species, top-level desc is often empty in 2024 — build it from traits instead.
-function normalizeSpecies(s) {
-  if (!s?.traits?.length) return s
-  const built = s.traits.map(t => `${t.name}: ${t.desc}`).join('\n\n')
-  return { ...s, desc: s.desc ? `${s.desc}\n\n${built}` : built }
-}
-
-// ─── Diff logic ──────────────────────────────────────────────────────────────
-
-export function computeDiff(category, a, b) {
-  const changes = []
-
-  if (category === 'Spell') {
-    const lvlA = a.level ?? a.spell_level
-    const lvlB = b.level ?? b.spell_level
-    if (lvlA !== lvlB) changes.push(`Level: ${lvlA} → ${lvlB}`)
-    if (a.casting_time !== b.casting_time) changes.push(`Casting time: "${a.casting_time}" → "${b.casting_time}"`)
-    if (a.duration      !== b.duration)      changes.push(`Duration: "${a.duration}" → "${b.duration}"`)
-    if (a.range         !== b.range)         changes.push(`Range: "${a.range}" → "${b.range}"`)
-    if (schoolName(a.school) !== schoolName(b.school)) changes.push(`School: ${schoolName(a.school)} → ${schoolName(b.school)}`)
+  const entries = []
+  for (const [key, [a, b]] of buckets) {
+    if (a.length > 1 || b.length > 1) {
+      warnings.push(`Multiple source entries named ${a[0]?.name || b[0]?.name}; shown separately.`)
+      for (const [records, edition] of [[a, 0], [b, 1]]) for (const record of records) {
+        const entry = makeEntry(category, edition ? null : record, edition ? record : null,
+          { [edition ? 'v2014' : 'v2024']: 'ambiguous' })
+        entry.slug = `${key}-${record.key}`
+        entries.push(entry)
+      }
+    } else entries.push(makeEntry(category, a[0], b[0], {
+      v2014: a.length ? 'found' : coverage[0], v2024: b.length ? 'found' : coverage[1],
+    }))
   }
-
-  if (category === 'Creature') {
-    if (a.challenge_rating_text !== b.challenge_rating_text) changes.push(`CR: ${a.challenge_rating_text} → ${b.challenge_rating_text}`)
-  }
-
-  if (category === 'Race') {
-    const sizeA = speciesSize(a.traits), sizeB = speciesSize(b.traits)
-    if (sizeA !== sizeB) changes.push(`Size: ${sizeA} → ${sizeB}`)
-    const speedA = speciesSpeed(a.traits), speedB = speciesSpeed(b.traits)
-    if (speedA !== speedB) changes.push(`Speed: ${speedA} → ${speedB}`)
-  }
-
-  // Universal: description word-level diff summary
-  const descDiff = descChanged(a.desc, b.desc)
-  if (descDiff) changes.push(descDiff)
-
-  if (changes.length === 0) changes.push('Minor wording/formatting updates only')
-  return changes
+  if (!entries.length && warnings.length) throw new Error(warnings.join(' '))
+  const exact = canonicalName(category, needle)
+  entries.sort((a, b) => Number(canonicalName(category, b.name) === exact) - Number(canonicalName(category, a.name) === exact) || a.name.localeCompare(b.name))
+  return { entries, warnings: [...new Set(warnings)] }
 }
-
-// Returns word-level diff tokens for inline highlight rendering
-// Each token: { text, type: 'same' | 'removed' | 'added' }
-export function wordDiff(textA, textB) {
-  const wordsA = (textA || '').split(/(\s+)/)
-  const wordsB = (textB || '').split(/(\s+)/)
-  return diffWords(wordsA, wordsB)
-}
-
-function diffWords(a, b) {
-  const m = a.length, n = b.length
-  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0))
-  for (let i = m - 1; i >= 0; i--)
-    for (let j = n - 1; j >= 0; j--)
-      dp[i][j] = a[i] === b[j] ? dp[i+1][j+1] + 1 : Math.max(dp[i+1][j], dp[i][j+1])
-
-  const tokens = []
-  let i = 0, j = 0
-  while (i < m || j < n) {
-    if (i < m && j < n && a[i] === b[j]) {
-      tokens.push({ text: a[i], type: 'same' }); i++; j++
-    } else if (j < n && (i >= m || dp[i][j+1] >= (dp[i+1]?.[j] ?? 0))) {
-      tokens.push({ text: b[j], type: 'added' }); j++
-    } else {
-      tokens.push({ text: a[i], type: 'removed' }); i++
-    }
-  }
-  return tokens
-}
-
-function descChanged(a, b) {
-  const diff = (b || '').length - (a || '').length
-  if (Math.abs(diff) > 25) return `Description updated (${diff > 0 ? '+' : ''}${diff} chars)`
-  return null
-}
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-export function schoolName(school) {
-  if (!school) return '—'
-  if (typeof school === 'string') return school
-  return school.name || school.key || '—'
-}
-
-export function spellLevel(s) {
-  const l = s?.level ?? s?.spell_level
-  if (l === 0) return 'Cantrip'
-  return l !== undefined ? String(l) : '—'
-}
-
-// Find a trait by its type tag (v2/species 2024) or by name (v2/species 2014)
-function findTrait(traits, type, name) {
-  if (!traits?.length) return null
-  return traits.find(t => t.type === type) ?? traits.find(t => t.name?.toLowerCase() === name.toLowerCase()) ?? null
-}
-
-export function speciesSize(traits) {
-  const t = findTrait(traits, 'SIZE', 'Size')
-  if (!t?.desc) return '—'
-  const m = t.desc.match(/\b(Tiny|Small|Medium|Large|Huge|Gargantuan)\b/i)
-  return m ? m[1] : t.desc
-}
-
-export function speciesSpeed(traits) {
-  const t = findTrait(traits, 'SPEED', 'Speed')
-  if (!t?.desc) return '—'
-  const m = t.desc.match(/(\d+)\s*(?:feet|ft)/i)
-  return m ? `${m[1]} ft.` : t.desc
-}
-
-export const RANDOM_FACTS = [
-  { text: "In D&D 2024, the term 'racial' was replaced by 'species' throughout all rules.", category: "Language Change" },
-  { text: "The Lucky feat was redesigned — it no longer lets you cancel enemy advantage.", category: "Feat Change" },
-  { text: "Weapon mastery properties are entirely new in 2024, giving martials more tactical options.", category: "New Mechanic" },
-  { text: "In 2024, all conditions like Grappled and Frightened are formally defined in one unified glossary.", category: "Rules Clarity" },
-  { text: "The 2024 PHB features 48 subclasses, up from 32 in 2014.", category: "Content" },
-  { text: "Unarmed Strikes are now Light weapons in 2024, enabling two-weapon fighting without gear.", category: "Combat Change" },
-  { text: "Exhaustion now applies -1 to all d20 tests per level, replacing 6 different effect thresholds.", category: "Rules Change" },
-  { text: "The 2024 rules introduce the Bastion system — players can build and manage strongholds.", category: "New Mechanic" },
-  { text: "In 2024, all spellcasters can swap prepared spells after any long rest by default.", category: "Spellcasting" },
-  { text: "The Ranger was significantly redesigned in 2024, addressing years of community criticism.", category: "Class Change" },
-  { text: "Concentration checks now use a fixed DC 10 in 2024, instead of half damage received.", category: "Rules Change" },
-  { text: "The 2024 SRD is released under Creative Commons, not just the OGL.", category: "Legal Change" },
-]

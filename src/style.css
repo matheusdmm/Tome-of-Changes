@@ -25,11 +25,10 @@
   --color-diff-added:     #8de08d;
 
   /* Fonts */
-  --font-family-sans:               'Source Sans 3', system-ui, sans-serif;
-  --font-family-cinzel:             'Cinzel', serif;
-  --font-family-cinzel-decorative:  'Cinzel Decorative', serif;
-  --font-family-metamorphous:       'Metamorphous', serif;
-  --font-family-jim-nightshade:     'Jim Nightshade', cursive;
+  --font-sans:               'Source Sans 3', system-ui, sans-serif;
+  --font-cinzel:             'Cinzel', serif;
+  --font-cinzel-decorative:  'Cinzel Decorative', serif;
+  --font-jim-nightshade:     'Jim Nightshade', cursive;
 
   /* Custom animations */
   --animate-fade-in:    fadeIn 0.35s ease forwards;
@@ -43,7 +42,7 @@ html.light {
   --color-parchment-dark: #5a3010;
   --color-gold:           #8b6200;
   --color-gold-light:     #9e7200;
-  --color-gold-bright:    #b08000;
+  --color-gold-bright:    #725100;
   --color-v2014:          #1a5fa8;
   --color-v2024:          #1e7a26;
   --color-bg:             #f5ead7;
@@ -71,10 +70,17 @@ html.light {
 
 body {
   background: var(--color-bg);
-  font-family: var(--font-family-sans);
+  font-family: var(--font-sans);
   color: var(--color-parchment);
   min-height: 100vh;
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 a { color: inherit; text-decoration: none; }
+
+:focus-visible { outline: 2px solid var(--color-gold-bright); outline-offset: 4px; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: 0.5; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

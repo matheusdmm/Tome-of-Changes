@@ -1,95 +1,49 @@
 <template>
-  <div class="max-w-[680px] mx-auto px-4 py-8 font-cinzel">
-
-    <h2 class="text-gold-bright text-xl tracking-[0.15em] uppercase mb-2">Privacy & Data</h2>
-    <p class="text-parchment/40 text-[0.75rem] tracking-[0.1em] uppercase mb-8">In accordance with LGPD (Lei Geral de Proteção de Dados)</p>
-
-    <section class="mb-8">
-      <h3 class="text-gold text-[0.8rem] tracking-[0.15em] uppercase mb-3">Data stored on your device</h3>
-      <p class="text-parchment/60 text-sm leading-relaxed mb-3">
-        The following data is saved exclusively in your browser's local storage. It never leaves your device and is never sent to any server.
-      </p>
-      <ul class="flex flex-col gap-2">
-        <li v-for="item in localData" :key="item.key" class="text-sm text-parchment/60 pl-5 relative before:content-['→'] before:absolute before:left-0 before:text-gold/50">
-          <span class="text-parchment/80">{{ item.label }}</span> — {{ item.desc }}
-        </li>
-      </ul>
+  <article class="max-w-3xl mx-auto space-y-6 text-parchment/90 leading-relaxed">
+    <h2 class="font-cinzel text-xl text-gold-bright">Privacy and data</h2>
+    <section class="space-y-3">
+      <h3 class="font-cinzel text-gold-bright">Saved on this device</h3>
+      <p>Favorites (including source snapshots), session notes, campaign or character collections, recently viewed entries, and theme preference are stored in this browser. The app does not upload that saved data or your notes. Tabs on the same origin share updates; when they edit the same saved data, the last write wins.</p>
+      <p>Downloaded backups contain your session notes and collection notes, along with the entries you saved. You choose where to store or share the file. Importing it restores that data to this browser.</p>
+      <p>Keep private information out of search queries. Searches are part of shareable page URLs and are sent to Open5e to retrieve rules data. Copying an AI prompt copies rules and statistics; it does not include your session notes. You choose where to paste it.</p>
     </section>
-
-    <section class="mb-8">
-      <h3 class="text-gold text-[0.8rem] tracking-[0.15em] uppercase mb-3">Anonymous usage analytics</h3>
-      <p class="text-parchment/60 text-sm leading-relaxed">
-        This site uses <span class="text-parchment/80">Vercel Analytics</span> to collect anonymous, aggregated usage data — such as page views and search events. No personal information is collected. Vercel may process metadata such as IP address and user agent solely for the purpose of generating anonymous statistics. For details, see
-        <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener" class="text-gold/70 hover:text-gold transition-colors">Vercel's Privacy Policy</a>.
-      </p>
+    <section class="space-y-3">
+      <h3 class="font-cinzel text-gold-bright">Usage analytics</h3>
+      <p>The app includes Vercel Analytics for page views and search, favorite, sharing, and AI-prompt events. Custom events contain categories, counts, or actions, rather than note text or entry names. Page-view URLs can contain the searched rule name, filter choices, or a collection's identifier. The service receives browser/network metadata; see <a class="underline" href="https://vercel.com/docs/analytics/privacy-policy" target="_blank" rel="noopener noreferrer">Vercel's analytics privacy information</a>. Analytics collection depends on the deployment's Vercel configuration.</p>
     </section>
-
-    <section class="mb-8">
-      <h3 class="text-gold text-[0.8rem] tracking-[0.15em] uppercase mb-3">Third-party API</h3>
-      <p class="text-parchment/60 text-sm leading-relaxed">
-        Game content is fetched from the <span class="text-parchment/80">Open5e API</span> (open5e.com). Search queries are sent to their servers to retrieve results. No personal data is included in these requests.
-      </p>
+    <section class="space-y-3">
+      <h3 class="font-cinzel text-gold-bright">Other external requests</h3>
+      <p>Rules come from <a class="underline" href="https://open5e.com/">Open5e</a>. Fonts load from Google Fonts. Those providers receive the network information needed to deliver their responses. The PT-BR navigation link opens the current page through Google Translate when you choose it.</p>
     </section>
-
-    <section class="mb-8">
-      <h3 class="text-gold text-[0.8rem] tracking-[0.15em] uppercase mb-3">Your rights under LGPD</h3>
-      <p class="text-parchment/60 text-sm leading-relaxed">
-        You have the right to access, correct, and delete any data associated with you. Since all app data is stored locally on your device, you are in full control. You can delete it at any time using the button below.
-      </p>
-    </section>
-
-    <section class="border-t border-gold/15 pt-8">
-      <h3 class="text-gold text-[0.8rem] tracking-[0.15em] uppercase mb-3">Delete your data</h3>
-      <p class="text-parchment/60 text-sm leading-relaxed mb-4">
-        This will permanently remove all your favorites, recently viewed entries, and session notes from this browser.
-      </p>
-      <button
-        v-if="!deleted"
-        @click="confirmDelete = true"
-        class="font-cinzel text-[0.7rem] tracking-[0.1em] uppercase py-2 px-5 border border-crimson/60 rounded-[1px] bg-transparent text-crimson-light cursor-pointer transition-all duration-200 hover:border-crimson hover:bg-crimson/10"
-      >✕ Delete all my data</button>
-
-      <div v-if="confirmDelete && !deleted" class="mt-4 flex items-center gap-4">
-        <span class="text-parchment/50 text-[0.75rem] tracking-[0.05em]">Are you sure? This cannot be undone.</span>
-        <button
-          @click="deleteAllData"
-          class="font-cinzel text-[0.7rem] tracking-[0.1em] uppercase py-1 px-4 border border-crimson rounded-[1px] bg-crimson/20 text-crimson-light cursor-pointer transition-all duration-200 hover:bg-crimson/30"
-        >Confirm</button>
-        <button
-          @click="confirmDelete = false"
-          class="font-cinzel text-[0.7rem] tracking-[0.1em] uppercase py-1 px-4 border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold"
-        >Cancel</button>
+    <section class="space-y-3">
+      <h3 class="font-cinzel text-gold-bright">Delete saved data</h3>
+      <p>This removes favorites, notes, collections, recent entries, and theme preference from this browser and clears them from the running app. It does not delete downloaded backup files, previously submitted analytics, or data you pasted into another service. You can restore saved entries and notes only if you kept a backup.</p>
+      <button v-if="!confirmDelete" class="border border-crimson-light p-2" @click="confirmDelete = true">Delete all my data</button>
+      <div v-else class="flex flex-wrap gap-4 items-center">
+        <p>Delete all saved data? This cannot be undone.</p>
+        <button class="border border-crimson-light p-2" @click="deleteAllData">Confirm deletion</button>
+        <button class="underline" @click="confirmDelete = false">Cancel</button>
       </div>
-
-      <div v-if="deleted" class="text-[0.75rem] tracking-[0.1em] text-gold/70 uppercase">✓ All data deleted</div>
+      <p role="status" aria-live="polite">{{ message }}</p>
     </section>
-
-  </div>
+    <RouterLink class="underline" to="/attribution">Rules sources and attribution</RouterLink>
+  </article>
 </template>
-
 <script setup>
 import { ref } from 'vue'
 import { usePageMeta } from '../composables/usePageMeta.js'
-
-usePageMeta(
-  'Privacy & Data | Tome of Changes',
-  'Privacy policy and data management for Tome of Changes. LGPD compliant.',
-)
-
-const confirmDelete = ref(false)
-const deleted = ref(false)
-
-const localData = [
-  { key: 'favorites',       label: 'Favorites',        desc: 'Entries you have saved for quick access' },
-  { key: 'recently-viewed', label: 'Recently Viewed',  desc: 'The last 10 entries you looked up' },
-  { key: 'notes',           label: 'Session Notes',    desc: 'Notes you have written on individual entries' },
-]
-
+import { resetStoredData } from '../composables/useStorage.js'
+import { useFavorites } from '../composables/useFavorites.js'
+import { useNotes } from '../composables/useNotes.js'
+import { useRecentlyViewed } from '../composables/useRecentlyViewed.js'
+import { useTheme } from '../composables/useTheme.js'
+import { useCollections } from '../composables/useCollections.js'
+useFavorites(); useNotes(); useRecentlyViewed(); useTheme(); useCollections()
+usePageMeta('Privacy and data | Tome of Changes', 'How Tome of Changes stores personal notes, uses external services, and deletes saved browser data.')
+const confirmDelete = ref(false), message = ref('')
 function deleteAllData() {
-  localStorage.removeItem('tome-favorites')
-  localStorage.removeItem('tome-recently-viewed')
-  localStorage.removeItem('tome-notes')
+  const success = resetStoredData()
   confirmDelete.value = false
-  deleted.value = true
+  message.value = success ? 'All saved data deleted.' : 'This tab was cleared, but browser storage could not be deleted. Check permissions and retry.'
 }
 </script>

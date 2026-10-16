@@ -1,11 +1,12 @@
 <template>
-  <span class="italic text-base leading-[1.8] text-parchment/80">
+  <span class="whitespace-pre-wrap italic text-base leading-[1.8] text-parchment/90">
     <span
       v-for="(token, i) in tokens"
       :key="i"
       :class="{
         'bg-crimson/30 text-[var(--color-diff-removed)] line-through rounded-sm px-px': token.type === 'removed',
-        'bg-v2024/20 text-[var(--color-diff-added)] rounded-sm px-px': token.type === 'added',
+        'bg-v2024/20 text-[var(--color-diff-added)] underline rounded-sm px-px': token.type === 'added',
+        'not-italic block my-3 text-sm text-parchment/80': token.type === 'omitted',
       }"
     >{{ token.text }}</span>
   </span>
@@ -13,12 +14,11 @@
 
 <script setup>
 import { computed } from 'vue'
-import { wordDiff } from '../composables/useOpen5e.js'
 
-const props = defineProps({ textA: String, textB: String, side: String })
+const props = defineProps({ tokens: { type: Array, default: () => [] }, side: String })
 
 const tokens = computed(() => {
-  const all = wordDiff(props.textA || '', props.textB || '')
+  const all = props.tokens
   if (props.side === 'a') return all.filter(t => t.type !== 'added')
   if (props.side === 'b') return all.filter(t => t.type !== 'removed')
   return all

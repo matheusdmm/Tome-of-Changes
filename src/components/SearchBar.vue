@@ -4,25 +4,28 @@
       <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gold text-[1.1rem] pointer-events-none">⚔</span>
       <input
         ref="inputRef"
+        aria-label="Search SRD entries by name"
         type="text"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
+        @keydown.enter="$emit('submit')"
         placeholder="Search by name..."
         autocomplete="off"
-        class="w-full bg-input-bg border border-gold rounded-sm py-[0.9rem] pr-4 pl-12 text-base text-parchment outline-none transition-[box-shadow,border-color] duration-300 shadow-[0_0_15px_rgba(184,134,11,0.1)] placeholder:text-parchment/30 focus:border-gold-bright focus:shadow-[0_0_25px_rgba(240,192,64,0.2)]"
+        class="w-full bg-input-bg border border-gold rounded-sm py-[0.9rem] pr-4 pl-12 text-base text-parchment outline-none transition-[box-shadow,border-color] duration-300 shadow-[0_0_15px_rgba(184,134,11,0.1)] placeholder:text-parchment/80 focus:border-gold-bright focus:shadow-[0_0_25px_rgba(240,192,64,0.2)]"
       />
     </div>
 
-    <div class="flex gap-2 flex-wrap justify-center">
+    <div class="flex gap-2 flex-wrap justify-center" role="group" aria-label="Entry category">
       <button
         v-for="(meta, key) in CATEGORIES"
         :key="key"
+        :aria-pressed="category === key"
         @click="$emit('update:category', key)"
         :class="[
           'font-cinzel text-[0.7rem] tracking-[0.1em] py-[0.35rem] px-[0.9rem] border rounded-[1px] bg-transparent cursor-pointer transition-all duration-200 uppercase',
           category === key
             ? 'bg-gold/15 border-gold text-gold-bright'
-            : 'border-gold/40 text-parchment/50 hover:border-gold hover:text-gold'
+            : 'border-gold/40 text-parchment/80 hover:border-gold hover:text-gold'
         ]"
       >{{ meta.label }}</button>
     </div>
@@ -34,14 +37,14 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { CATEGORIES } from '../composables/useOpen5e.js'
 
 defineProps({ modelValue: String, category: String })
-defineEmits(['update:modelValue', 'update:category'])
+defineEmits(['update:modelValue', 'update:category', 'submit'])
 
 const inputRef = ref(null)
 
 function onKeydown(e) {
   const active = document.activeElement
-  if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return
-  if (e.key === '/' || (e.ctrlKey && e.key === 'k')) {
+  if (active?.matches('input, textarea, [contenteditable="true"]')) return
+  if (e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key === 'k')) {
     e.preventDefault()
     inputRef.value?.focus()
   }

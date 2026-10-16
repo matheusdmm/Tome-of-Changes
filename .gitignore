@@ -8,6 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+docs/
+.bun-install-cache/
+.maintenance-check/
 dist
 dist-ssr
 *.local

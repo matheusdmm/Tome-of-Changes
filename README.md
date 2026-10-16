@@ -1,80 +1,65 @@
-# ⚔ Tome of Changes
+# Tome of Changes
 
-> *"The rules have changed. But by how much?"*
+A browser app for comparing D&D 5e SRD rules from 2014 and 2024. Built with Vue 3, Vue Router, Vite 8, and Tailwind CSS 4.
 
-The 2024 Player's Handbook rewrote a lot. Spells got tweaked, feats got overhauled, creatures got adjusted, and your Tiefling is now technically a "species." If you've ever sat at the table mid-session trying to remember whether *Fireball* still does the same damage, or whether *Lucky* works the way you remember — this tool is for you.
+## Features
 
-**Tome of Changes** puts the 2014 and 2024 SRD side by side, highlights exactly what's different, and gets out of your way.
+- Search spells, feats, conditions, creatures, magic items, and species.
+- Compare rules text and statistics, with additions and removals highlighted.
+- View each edition's source and switch between full text and changes only.
+- Browse without a name and filter spells by level or school, creatures by CR or type, and entries by comparison status.
+- Browse conditions and read sourced notes about the 2024 rules.
+- Save favorites and session notes in your browser.
+- Organize saved entries into campaign or character collections with notes and review checklists.
+- Export and restore favorites, notes, and collections with a JSON backup.
+- Share searches by URL.
+- Light and dark themes.
 
----
+Rules come from Open5e and are limited to SRD content. The app does not cover every entry in the published books.
 
-## What it does
+## Development
 
-Search for anything in the SRD — a spell, feat, creature, condition, magic item, or species — and instantly see both editions compared:
+Requires Bun 1.4.2.
 
-- **Stat table** surfaces the mechanical stuff that matters (spell level, casting time, range, CR, size, speed) in a clean side-by-side table, with changed rows highlighted
-- **Word-level diffs** highlight added and removed text inline, so you spot changes at a glance instead of re-reading entire paragraphs
-- **Detected Changes** gives you a plain-English summary at the bottom of each card
-- **Favorites** — heart any entry to save it for later; your list persists across sessions
-- **Ask AI** — one click copies a structured prompt (with both editions' full text and stats) to your clipboard, ready to paste into any LLM, with instructions to explain every change in Brazilian Portuguese
-- **Shareable links** — every search lives at its own URL, so you can drop it in Discord and your whole group sees the same result
-- **Light / dark theme** — toggle between themes; your preference is remembered
-
----
-
-## Searchable categories
-
-| Category | Examples |
-|---|---|
-| Spells | Fireball, Hex, Counterspell, Healing Word |
-| Feats | Lucky, Sentinel, War Caster, Great Weapon Master |
-| Conditions | Grappled, Frightened, Exhaustion, Blinded |
-| Creatures | Goblin, Beholder, Tarrasque, Owlbear |
-| Magic Items | Bag of Holding, Vorpal Sword, Ring of Protection |
-| Species | Elf, Tiefling, Dragonborn, Halfling |
-
----
-
-## Running it locally
-
-No backend, no database, no `.env` file to wrestle with. It talks directly to the Open5e API.
-
-```bash
-git clone https://github.com/matheusdmm/Tome-of-Changes.git
-cd Tome-of-Changes
-pnpm install
-pnpm dev
+```sh
+bun install --frozen-lockfile
+bun run dev
 ```
 
-Open [localhost:3000](http://localhost:3000) and start searching.
+Open [localhost:3000](http://localhost:3000). No backend or environment file is required. Searches need an internet connection.
 
-```bash
-pnpm build    # production build
-pnpm preview  # preview the build locally
+| Command | Description |
+| --- | --- |
+| `bun run test` | Run the Vitest suite |
+| `bun run test:watch` | Run tests in watch mode |
+| `bun run build` | Build to `dist/` |
+| `bun run preview` | Preview the production build |
+
+Use Bun to manage dependencies and keep `bun.lock` committed. Run the tests and build before submitting changes. CI also builds the Docker image and runs CodeQL separately.
+
+## Deployment
+
+For Vercel, use `bun run build` with `dist` as the output directory. Routing and cache settings are in `vercel.json`.
+
+To run with Docker and nginx:
+
+```sh
+docker build -t tome-of-changes .
+docker run --rm -p 8080:80 tome-of-changes
 ```
 
----
+Open [localhost:8080](http://localhost:8080).
 
-## Stack
+## Saved data
 
-| | |
-|---|---|
-| [Vue 3](https://vuejs.org) | Composition API, `<script setup>` throughout |
-| [Vite 8](https://vitejs.dev) | Dev server + build |
-| [Tailwind CSS v4](https://tailwindcss.com) | Utility classes, CSS-native config via `@theme` |
-| [Vue Router](https://router.vuejs.org) | Every search is a URL you can bookmark or share |
-| [Open5e API](https://open5e.com) | Live SRD data for both editions, free and open |
+Favorites store a snapshot of the rules when saved. Notes, recent entries, and theme preferences are also stored locally. Delete saved browser data from the Privacy page.
 
-The diff engine is a hand-rolled LCS (longest common subsequence) algorithm — no libraries, just the classic O(mn) grid. It runs entirely in the browser.
+Use Favorites to manage collections and download backups of the full library or a selected collection. Imports show a preview before applying changes. Merge keeps current values by default; you can choose imported values for conflicts or replace the saved library. Backups can include saved rules text or just entry references. Backup files contain personal notes.
 
----
+## Data and licensing
 
-## Data & legal
+Rules data is provided by [Open5e](https://open5e.com/api-docs/). [SRD 5.1 and SRD 5.2](https://www.dndbeyond.com/srd) are available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Rules attribution is available at `/attribution`.
 
-All rules data comes from [Open5e](https://open5e.com), which aggregates the official Systems Reference Documents released by Wizards of the Coast. The 2024 SRD is under Creative Commons; the 2014 SRD is under the OGL.
+The original code and design use [CC BY-NC 4.0](LICENSE). Tome of Changes is not affiliated with Wizards of the Coast or Dungeons & Dragons.
 
-Tome of Changes is a fan project. Not affiliated with Wizards of the Coast or Dungeons & Dragons.
-
----
-
-*Built by [Matheus](https://matheusdmm.dev) because the PHB doesn't have a diff view.*
+Created by [Matheus](https://matheusdmm.dev).

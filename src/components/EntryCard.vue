@@ -1,38 +1,56 @@
 <template>
-  <div class="animate-fade-in bg-[linear-gradient(160deg,var(--color-surface),var(--color-surface-alt))] border border-gold/30 rounded-sm overflow-hidden transition-[border-color,box-shadow] duration-300 hover:border-gold/70 hover:shadow-[0_4px_30px_rgba(184,134,11,0.1)]">
+  <div @click="rememberEntry" @focusin="rememberEntry" class="animate-fade-in bg-[linear-gradient(160deg,var(--color-surface),var(--color-surface-alt))] border border-gold/30 rounded-sm overflow-hidden transition-[border-color,box-shadow] duration-300 hover:border-gold/70 hover:shadow-[0_4px_30px_rgba(184,134,11,0.1)]">
 
     <!-- Header -->
     <div class="px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-gold/8 to-transparent border-b border-gold/20 flex flex-col gap-2">
       <div class="font-cinzel text-base sm:text-[1.2rem] text-gold-bright font-semibold">{{ entry.name }}</div>
       <div class="flex items-center gap-2 flex-wrap">
-        <div class="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase py-[0.2rem] px-[0.7rem] border border-crimson text-crimson-light rounded-[1px] shrink-0">{{ entry.category }}</div>
+        <div class="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase py-[0.2rem] px-[0.7rem] border border-crimson text-crimson-light rounded-[1px] shrink-0">{{ CATEGORIES[entry.category]?.label || entry.category }}</div>
         <button
           @click="toggleFavorite(entry)"
+          :aria-pressed="isFavorite(entry)"
           :title="isFavorite(entry) ? 'Remove from favorites' : 'Add to favorites'"
           class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border rounded-[1px] bg-transparent cursor-pointer transition-all duration-200 shrink-0"
-          :class="isFavorite(entry) ? 'border-crimson/60 text-crimson-light hover:border-crimson' : 'border-gold/40 text-parchment/50 hover:border-gold hover:text-gold'"
+          :class="isFavorite(entry) ? 'border-crimson/60 text-crimson-light hover:border-crimson' : 'border-gold/40 text-parchment/80 hover:border-gold hover:text-gold'"
         >{{ isFavorite(entry) ? '♥ Saved' : '♡ Save' }}</button>
         <button
           @click="copyForLLM"
           title="Copy prompt for AI analysis in Portuguese"
-          class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
+          class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/80 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
         >{{ copiedLLM ? '✓ Copied' : '✦ Ask AI' }}</button>
         <button
           @click="copyLink"
           :title="copied ? 'Copied!' : 'Copy shareable link'"
-          class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/50 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
+          class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border border-gold/40 rounded-[1px] bg-transparent text-parchment/80 cursor-pointer transition-all duration-200 hover:border-gold hover:text-gold shrink-0"
         >{{ copied ? '✓ Copied' : '⇥ Share' }}</button>
         <button
           @click="noteOpen = !noteOpen"
+          :aria-expanded="noteOpen || !!noteText" :aria-controls="noteId"
           class="font-cinzel text-[0.65rem] tracking-[0.1em] py-[0.2rem] px-[0.7rem] border rounded-[1px] bg-transparent cursor-pointer transition-all duration-200 shrink-0"
-          :class="noteText ? 'border-gold/60 text-gold hover:border-gold' : 'border-gold/40 text-parchment/50 hover:border-gold hover:text-gold'"
+          :class="noteText ? 'border-gold/60 text-gold hover:border-gold' : 'border-gold/40 text-parchment/80 hover:border-gold hover:text-gold'"
         >✎ Note{{ noteText ? ' ●' : '' }}</button>
       </div>
+      <CollectionPicker :entry="entry" />
     </div>
 
+    <div class="px-4 sm:px-6 py-2 text-sm text-parchment/80" aria-live="polite">
+      <p v-if="isSnapshot">Saved snapshot ({{ savedDate }}). <RouterLink :to="comparisonPath(entry)" class="underline">Search current source data</RouterLink></p>
+      <p v-if="copyError" role="alert">{{ copyError }}</p>
+      <div v-if="confirmFavoriteRemoval" class="my-3 border border-gold/40 p-3 space-y-2">
+        <p>Remove this entry from Favorites and all {{ membershipCount }} collections? Its session note will be kept.</p>
+        <button class="underline mr-4" @click="removeFavorite">Confirm removal</button><button class="underline" @click="confirmFavoriteRemoval = false">Cancel removal</button>
+      </div>
+      <p>{{ comparisonStatus }}</p>
+      <div class="flex flex-wrap gap-3 mt-3" role="group" aria-label="Comparison reading mode">
+        <button :aria-pressed="!changesOnly" class="border px-2 py-1" :class="!changesOnly ? 'bg-gold/15 border-gold text-gold-bright' : 'border-gold/40'" @click="changesOnly = false">Full comparison</button>
+        <button :aria-pressed="changesOnly" class="border px-2 py-1" :class="changesOnly ? 'bg-gold/15 border-gold text-gold-bright' : 'border-gold/40'" @click="changesOnly = true">Changes only</button>
+      </div>
+      <p class="mt-2"><span class="line-through">Removed text</span> · <span class="underline">Added text</span>. Highlights show text edits, not a rules interpretation.</p>
+      <p v-if="changesOnly && a && b && !displayTokens.length" class="mt-2">No description changes. Any changed statistics are shown below.</p>
+    </div>
     <!-- Stats table (full-width) -->
-    <div v-if="statRows.length" class="px-4 sm:px-6 pt-4 pb-1">
-      <StatsTable :rows="statRows" />
+    <div v-if="displayRows.length" class="px-4 sm:px-6 pt-4 pb-1">
+      <StatsTable :rows="displayRows" />
     </div>
 
     <!-- Description comparison (two columns) -->
@@ -44,11 +62,12 @@
           <span class="w-[6px] h-[6px] rounded-full shrink-0 bg-v2014" />
           2014 Edition
         </div>
-        <template v-if="entry.v2014">
-          <WordDiff v-if="entry.v2024" :textA="entry.v2014.desc" :textB="entry.v2024.desc" side="a" />
-          <p v-else class="text-parchment/80 text-base leading-[1.8] italic">{{ truncate(entry.v2014.desc, 400) }}</p>
+        <SourceDetails :record="a" />
+        <template v-if="a">
+          <WordDiff v-if="b" :tokens="displayTokens" side="a" />
+          <p v-else class="whitespace-pre-wrap text-parchment/80 text-base leading-[1.8] italic">{{ a.comparisonText }}</p>
         </template>
-        <div v-else class="font-cinzel text-sm text-parchment/20 py-4 text-center italic">Not present in 2014 SRD</div>
+        <div v-else class="font-cinzel text-sm text-parchment/80 py-4 text-center italic">{{ missingEdition("v2014") }}</div>
       </div>
 
       <!-- 2024 Edition -->
@@ -57,166 +76,136 @@
           <span class="w-[6px] h-[6px] rounded-full shrink-0 bg-v2024" />
           2024 Edition
         </div>
-        <template v-if="entry.v2024">
-          <WordDiff v-if="entry.v2014" :textA="entry.v2014.desc" :textB="entry.v2024.desc" side="b" />
-          <p v-else class="text-parchment/80 text-base leading-[1.8] italic">{{ truncate(entry.v2024.desc, 400) }}</p>
+        <SourceDetails :record="b" />
+        <template v-if="b">
+          <WordDiff v-if="a" :tokens="displayTokens" side="b" />
+          <p v-else class="whitespace-pre-wrap text-parchment/80 text-base leading-[1.8] italic">{{ b.comparisonText }}</p>
         </template>
-        <div v-else class="font-cinzel text-sm text-parchment/20 py-4 text-center italic">Not present in 2024 SRD</div>
+        <div v-else class="font-cinzel text-sm text-parchment/80 py-4 text-center italic">{{ missingEdition("v2024") }}</div>
       </div>
     </div>
 
     <!-- Detected changes -->
-    <div class="bg-v2024/4 border-t border-v2024/15 px-4 py-3 sm:px-6" v-if="entry.diffs?.length">
+    <div class="bg-v2024/4 border-t border-v2024/15 px-4 py-3 sm:px-6" v-if="diffs?.length">
       <div class="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase text-v2024 mb-2 opacity-80">✦ Detected Changes</div>
       <ul class="flex flex-col gap-1.5">
         <li
-          v-for="d in entry.diffs"
+          v-for="d in diffs"
           :key="d"
-          class="text-sm text-parchment/70 pl-5 relative before:content-['→'] before:absolute before:left-0 before:text-v2024 before:opacity-70"
+          class="text-sm text-parchment/80 pl-5 relative before:content-['→'] before:absolute before:left-0 before:text-v2024 before:opacity-70"
         >{{ d }}</li>
       </ul>
     </div>
 
     <!-- Session note -->
-    <div v-if="noteOpen || noteText" class="border-t border-gold/15 px-4 py-3 sm:px-6">
-      <div class="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase text-parchment/40 mb-2">✎ Session Note (Write Your own)</div>
+    <div v-if="noteOpen || noteText" :id="noteId" class="border-t border-gold/15 px-4 py-3 sm:px-6">
+      <label :for="`${noteId}-input`" class="block font-cinzel text-[0.65rem] tracking-[0.2em] uppercase text-parchment/80 mb-2">✎ Session note</label>
       <textarea
         v-model="noteText"
-        @input="scheduleNoteSave"
+        :id="`${noteId}-input`"
         placeholder="Add a note for your session..."
         rows="3"
-        class="w-full bg-transparent text-parchment/70 text-sm resize-none outline-none placeholder:text-parchment/20 leading-relaxed"
+        class="w-full bg-transparent text-parchment/80 text-sm resize-none outline-none placeholder:text-parchment/80 leading-relaxed"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, useId, onUnmounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { track } from '@vercel/analytics'
 import WordDiff from './WordDiff.vue'
 import StatsTable from './StatsTable.vue'
-import { spellLevel, schoolName, speciesSize, speciesSpeed } from '../composables/useOpen5e.js'
+import SourceDetails from './SourceDetails.vue'
+import CollectionPicker from './CollectionPicker.vue'
+import { CATEGORIES, normalizeRecord, statRows as buildStatRows, computeDiff, wordDiff } from '../composables/useOpen5e.js'
 import { useFavorites } from '../composables/useFavorites.js'
 import { useNotes } from '../composables/useNotes.js'
+import { useRecentlyViewed } from '../composables/useRecentlyViewed.js'
+import { useCollections } from '../composables/useCollections.js'
+import { comparisonPath, entryKey } from '../utils/entryIdentity.js'
+import { groupDiffTokens, changedPassages } from '../utils/wordDiff.js'
+import { sourceDetails } from '../utils/sourceDetails.js'
+import { changeStatus } from '../utils/entryFilters.js'
 
-const props = defineProps({ entry: Object })
-const copied = ref(false)
-const copiedLLM = ref(false)
-const { isFavorite, toggleFavorite: _toggleFavorite } = useFavorites()
+const props = defineProps({ entry: { type: Object, required: true } })
+const route = useRoute()
+const copied = ref(false), copiedLLM = ref(false), copyError = ref('')
+const { isFavorite, toggleFavorite: changeFavorite } = useFavorites()
 const { getNote, saveNote } = useNotes()
-
+const { addRecentlyViewed } = useRecentlyViewed()
+const { collections, contains } = useCollections()
+const confirmFavoriteRemoval = ref(false)
+const membershipCount = computed(() => collections.value.filter(c => contains(c.id, props.entry)).length)
+watch(() => entryKey(props.entry), () => { confirmFavoriteRemoval.value = false })
+const noteId = useId()
 const noteOpen = ref(false)
-const noteText = ref(getNote(props.entry))
-
-let noteTimer = null
-function scheduleNoteSave() {
-  clearTimeout(noteTimer)
-  noteTimer = setTimeout(() => saveNote(props.entry, noteText.value), 600)
+const changesOnly = ref(false)
+// Write immediately: navigation, reload and deletion cannot leave a delayed save behind.
+const noteText = computed({ get: () => getNote(props.entry), set: value => saveNote(props.entry, value) })
+const a = computed(() => normalizeRecord(props.entry.category, props.entry.v2014))
+const b = computed(() => normalizeRecord(props.entry.category, props.entry.v2024))
+const statRows = computed(() => buildStatRows(props.entry.category, a.value, b.value))
+const diffs = computed(() => a.value && b.value ? computeDiff(props.entry.category, a.value, b.value) : [])
+const tokens = computed(() => groupDiffTokens(wordDiff(a.value?.comparisonText, b.value?.comparisonText)))
+const displayTokens = computed(() => changesOnly.value ? changedPassages(tokens.value) : tokens.value)
+const displayRows = computed(() => changesOnly.value && a.value && b.value ? statRows.value.filter(row => row.changed) : statRows.value)
+const comparisonStatus = computed(() => {
+  if (!a.value || !b.value) return 'A complete edition comparison is not available for this entry.'
+  return changeStatus(props.entry) === 'unchanged' ? 'No changes detected in the compared fields.' : 'Both editions available. Changes detected in the compared fields.'
+})
+const isSnapshot = computed(() => route.name === 'favorites')
+const savedDate = computed(() => {
+  const date = props.entry.savedAt || props.entry.fetchedAt
+  return date ? new Date(date).toLocaleDateString() : 'date unknown'
+})
+function missingEdition(edition) {
+  if (props.entry.referenceOnly) return 'Rules text was not included in this backup. Open current source data to load this entry.'
+  const state = props.entry.availability?.[edition]
+  if (state === 'unavailable') return 'Source unavailable. Retry the search to compare this edition.'
+  if (state === 'incomplete') return 'Source results are incomplete. Try a more specific name.'
+  if (state === 'ambiguous') return 'Multiple possible counterparts. Review the source entries separately.'
+  return 'No matching entry found in this SRD. It may have a different name or be outside SRD coverage.'
 }
-
+function rememberEntry() { addRecentlyViewed(props.entry) }
 function toggleFavorite(entry) {
   const adding = !isFavorite(entry)
-  _toggleFavorite(entry)
-  track('favorite', { category: entry.category, name: entry.name, action: adding ? 'add' : 'remove' })
+  if (!adding && membershipCount.value) { confirmFavoriteRemoval.value = true; return }
+  changeFavorite(entry)
+  track('favorite', { category: entry.category, action: adding ? 'add' : 'remove' })
 }
-
-function truncate(t, max) { return t && t.length > max ? t.slice(0, max) + '…' : (t || '') }
-
-function copyLink() {
-  navigator.clipboard.writeText(`${window.location.origin}/compare/${encodeURIComponent(props.entry.category)}/${encodeURIComponent(props.entry.name)}`)
-  track('share', { category: props.entry.category, name: props.entry.name })
-  copied.value = true
-  setTimeout(() => copied.value = false, 2000)
+function removeFavorite() {
+  if (isFavorite(props.entry)) changeFavorite(props.entry)
+  confirmFavoriteRemoval.value = false
 }
-
-
-function buildLLMPrompt() {
-  const { name, category, v2014: a, v2024: b, diffs } = props.entry
-  const lines = []
-
-  lines.push(`Você está analisando as mudanças entre as edições do D&D 5e de 2014 e 2024.`)
-  lines.push(``)
-  lines.push(`Entrada: ${name}`)
-  lines.push(`Categoria: ${category}`)
-  lines.push(``)
-
-  if (statRows.value.length) {
-    lines.push(`=== Comparação de Estatísticas ===`)
-    for (const row of statRows.value) {
-      const changed = row.changed ? ' [ALTERADO]' : ''
-      lines.push(`${row.label}: ${row.v14} (2014) → ${row.v24} (2024)${changed}`)
+let copiedTimer, promptTimer
+async function copyText(text, prompt = false) {
+  copyError.value = ''
+  try {
+    if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable')
+    await navigator.clipboard.writeText(text)
+    if (prompt) {
+      copiedLLM.value = true; clearTimeout(promptTimer)
+      promptTimer = setTimeout(() => copiedLLM.value = false, 2000)
+    } else {
+      copied.value = true; clearTimeout(copiedTimer)
+      copiedTimer = setTimeout(() => copied.value = false, 2000)
     }
-    lines.push(``)
-  }
-
-  if (a) {
-    lines.push(`=== Edição 2014 — Descrição ===`)
-    lines.push(a.desc?.trim() || '(sem descrição)')
-    lines.push(``)
-  }
-
-  if (b) {
-    lines.push(`=== Edição 2024 — Descrição ===`)
-    lines.push(b.desc?.trim() || '(sem descrição)')
-    lines.push(``)
-  }
-
-  if (diffs?.length) {
-    lines.push(`=== Mudanças Detectadas ===`)
-    for (const d of diffs) lines.push(`→ ${d}`)
-    lines.push(``)
-  }
-
-  lines.push(`---`)
-  lines.push(`Com base nos dados acima, explique detalhadamente o que mudou entre as edições de 2014 e 2024 para esta entrada. Seja específico: mencione cada mudança mecânica, alteração de texto e qualquer impacto no jogo. Responda inteiramente em Português Brasileiro (pt-BR).`)
-
-  return lines.join('\n')
+    track(prompt ? 'ask-ai' : 'share', { category: props.entry.category })
+  } catch { copyError.value = 'Could not copy. Allow clipboard access in your browser and try again.' }
 }
-
+function copyLink() { return copyText(window.location.origin + comparisonPath(props.entry)) }
 function copyForLLM() {
-  navigator.clipboard.writeText(buildLLMPrompt())
-  track('ask-ai', { category: props.entry.category, name: props.entry.name })
-  copiedLLM.value = true
-  setTimeout(() => copiedLLM.value = false, 2000)
-}
-
-function typeName(t) { return (typeof t === 'string' ? t : t?.name) || '—' }
-function sizeName(s) { return (typeof s === 'string' ? s : s?.name) || '—' }
-function hpString(c) { return c?.hit_points ? `${c.hit_points} (${c.hit_dice})` : '—' }
-
-const statRows = computed(() => {
-  const { category, v2014: a, v2024: b } = props.entry
-  let rows = []
-  if (category === 'Spell') {
-    rows = [
-      { label: 'Level',     v14: spellLevel(a),              v24: spellLevel(b) },
-      { label: 'School',    v14: schoolName(a?.school),      v24: schoolName(b?.school) },
-      { label: 'Cast Time', v14: a?.casting_time,            v24: b?.casting_time },
-      { label: 'Range',     v14: a?.range,                   v24: b?.range },
-      { label: 'Duration',  v14: a?.duration,                v24: b?.duration },
-    ]
-  } else if (category === 'Creature') {
-    rows = [
-      { label: 'CR',   v14: a?.challenge_rating_text,                     v24: b?.challenge_rating_text },
-      { label: 'Type', v14: typeName(a?.type),                             v24: typeName(b?.type) },
-      { label: 'Size', v14: sizeName(a?.size),                             v24: sizeName(b?.size) },
-      { label: 'HP',   v14: hpString(a),                                   v24: hpString(b) },
-      { label: 'AC',   v14: a?.armor_class ? String(a.armor_class) : null, v24: b?.armor_class ? String(b.armor_class) : null },
-    ]
-  } else if (category === 'Race') {
-    rows = [
-      { label: 'Size',  v14: speciesSize(a?.traits),  v24: speciesSize(b?.traits) },
-      { label: 'Speed', v14: speciesSpeed(a?.traits), v24: speciesSpeed(b?.traits) },
-    ]
+  const lines = ["Compare as regras do D&D 5e de 2014 e 2024. Responda em Português Brasileiro.", props.entry.name, 'Estatísticas:']
+  for (const r of statRows.value) lines.push(r.label + ': ' + r.v14 + ' (2014) → ' + r.v24 + ' (2024)')
+  for (const [edition, record] of [['2014', a.value], ['2024', b.value]]) {
+    lines.push(edition + ':', record?.comparisonText || missingEdition('v' + edition))
+    const source = sourceDetails(record)
+    if (source) lines.push('Fonte: ' + source.name + ' (' + source.version + ')', source.url || '')
   }
-  return rows
-    .map(r => ({
-      label:   r.label,
-      v14:     r.v14 || '—',
-      v24:     r.v24 || '—',
-      changed: !!(a && b) && (r.v14 || '—') !== (r.v24 || '—'),
-    }))
-    .filter(r => r.v14 !== '—' || r.v24 !== '—')
-})
+  lines.push(...diffs.value, 'Diferencie mudanças observadas de interpretações. Não conclua que uma regra foi removida quando não há dados suficientes.')
+  return copyText(lines.join('\n'), true)
+}
+onUnmounted(() => { clearTimeout(copiedTimer); clearTimeout(promptTimer) })
 </script>
