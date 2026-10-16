@@ -73,7 +73,7 @@
     >{{ isLight ? '◐ Dark' : '◑ Light' }}</button>
 
     <RouterLink to="/" class="block">
-      <span class="text-gold text-[1.4rem] tracking-[0.5rem] opacity-70 block mb-2">⚔ ✦ ⚔</span>
+      <span class="text-gold text-[1.4rem] opacity-70 block mb-2">✦</span>
       <h1
         class="text-[clamp(1.8rem,4vw,3rem)] text-gold-bright leading-tight"
         :style="{

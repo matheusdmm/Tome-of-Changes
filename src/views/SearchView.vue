@@ -24,7 +24,6 @@
 <script setup>
 import { ref, watch, computed, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { track } from '@vercel/analytics'
 import SearchBar from '../components/SearchBar.vue'
 import EntryFilters from '../components/EntryFilters.vue'
 import EntryCard from '../components/EntryCard.vue'
@@ -85,7 +84,6 @@ watch(() => JSON.stringify([route.name, route.params.category, route.params.quer
   await run(activeCategory, activeQuery, false, browsing.value)
   if (category.value !== activeCategory || query.value !== activeQuery) return
   if (results.value.length === 1 && activeQuery && canonicalName(activeCategory, results.value[0].name) === canonicalName(activeCategory, activeQuery)) addRecentlyViewed(results.value[0])
-  if (!error.value && (activeQuery.trim() || browsing.value)) track('search', { category: activeCategory, results: results.value.length })
 }, { immediate: true })
 onUnmounted(() => { clearTimeout(timer); cancel() })
 </script>

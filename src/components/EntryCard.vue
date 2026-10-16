@@ -114,7 +114,6 @@
 <script setup>
 import { ref, computed, useId, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { track } from '@vercel/analytics'
 import WordDiff from './WordDiff.vue'
 import StatsTable from './StatsTable.vue'
 import SourceDetails from './SourceDetails.vue'
@@ -173,7 +172,6 @@ function toggleFavorite(entry) {
   const adding = !isFavorite(entry)
   if (!adding && membershipCount.value) { confirmFavoriteRemoval.value = true; return }
   changeFavorite(entry)
-  track('favorite', { category: entry.category, action: adding ? 'add' : 'remove' })
 }
 function removeFavorite() {
   if (isFavorite(props.entry)) changeFavorite(props.entry)
@@ -192,7 +190,6 @@ async function copyText(text, prompt = false) {
       copied.value = true; clearTimeout(copiedTimer)
       copiedTimer = setTimeout(() => copied.value = false, 2000)
     }
-    track(prompt ? 'ask-ai' : 'share', { category: props.entry.category })
   } catch { copyError.value = 'Could not copy. Allow clipboard access in your browser and try again.' }
 }
 function copyLink() { return copyText(window.location.origin + comparisonPath(props.entry)) }

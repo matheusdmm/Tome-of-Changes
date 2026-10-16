@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import fixtures from './fixtures/open5e.json'
-vi.mock('@vercel/analytics', () => ({ track: vi.fn() }))
 let app, host
 const flush = async () => { for (let i = 0; i < 5; i++) await new Promise(resolve => setTimeout(resolve, 0)) }
 const button = text => [...host.querySelectorAll('button')].find(node => node.textContent.trim() === text)
