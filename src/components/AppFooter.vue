@@ -7,7 +7,7 @@
 
         <!-- Brand -->
         <div class="max-w-xs">
-          <p class="font-cinzel text-gold-bright text-base tracking-[0.1em] mb-2">Tome of Changes</p>
+          <p class="font-cinzel text-gold-bright text-base tracking-[0.1em] mb-2">Tome Of Changes</p>
           <p class="text-parchment/80 text-sm leading-relaxed">
             Compare D&amp;D 5e spells, conditions, creatures and more between the 2014 and 2024 editions.
           </p>
@@ -51,7 +51,7 @@
       <!-- Bottom bar -->
       <div class="border-t border-gold/15 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-parchment/80 font-cinzel tracking-[0.08em]">
         <p>
-          © {{ year }} Tome of Changes. Built by
+          © {{ year }} Tome Of Changes. Built by
           <a href="https://matheusdmm.dev" target="_blank" rel="noopener" class="underline hover:text-parchment/80 transition-colors">Matheus</a>.
         </p>
       </div>

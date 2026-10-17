@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="flex justify-center gap-4 mb-4 text-sm"><RouterLink to="/browse/Spell" class="underline">Browse all categories</RouterLink></div>
+    <div class="text-center mb-6">
+      <h1 class="font-cinzel text-xl text-gold-bright mb-3">{{ heading }}</h1>
+      <p class="text-parchment/80 mb-4">{{ description }}</p>
+      <CategoryLinks />
+    </div>
     <SearchBar v-model="query" v-model:category="category" @submit="submit" />
     <EntryFilters :category="category" :entries="results" :filters="filters" @update="setFilter" @reset="resetFilters" />
     <div role="status" aria-live="polite" :aria-busy="loading" class="text-center font-cinzel text-sm mb-6 text-parchment/80">
@@ -17,7 +21,11 @@
     </div>
     <div class="flex flex-col gap-6"><EntryCard v-for="entry in visibleResults" :key="`${entry.category}-${entry.slug}`" :entry="entry" /></div>
     <nav v-if="pageCount > 1" aria-label="Search result pages" class="flex justify-center items-center gap-4 my-6">
-      <button :disabled="page <= 1" @click="setPage(page - 1)">Previous</button><span aria-live="polite">Page {{ page }} of {{ pageCount }}</span><button :disabled="page >= pageCount" @click="setPage(page + 1)">Next</button>
+      <RouterLink v-if="page > 1" :to="pageLocation(page - 1)" class="underline">Previous</RouterLink>
+      <span v-else aria-disabled="true" class="opacity-50">Previous</span>
+      <span aria-live="polite">Page {{ page }} of {{ pageCount }}</span>
+      <RouterLink v-if="page < pageCount" :to="pageLocation(page + 1)" class="underline">Next</RouterLink>
+      <span v-else aria-disabled="true" class="opacity-50">Next</span>
     </nav>
   </div>
 </template>
@@ -27,9 +35,11 @@ import { useRoute, useRouter } from 'vue-router'
 import SearchBar from '../components/SearchBar.vue'
 import EntryFilters from '../components/EntryFilters.vue'
 import EntryCard from '../components/EntryCard.vue'
+import CategoryLinks from '../components/CategoryLinks.vue'
 import { useEntrySearch } from '../composables/useEntrySearch.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
 import { useRecentlyViewed } from '../composables/useRecentlyViewed.js'
+import { CATEGORIES } from '../composables/useOpen5e.js'
 import { canonicalName } from '../utils/entryIdentity.js'
 import { filterEntries } from '../utils/entryFilters.js'
 const route = useRoute(), router = useRouter()
@@ -48,7 +58,20 @@ const filteredResults = computed(() => filterEntries(results.value, category.val
 const pageCount = computed(() => Math.max(1, Math.ceil(filteredResults.value.length / 10)))
 const page = computed(() => Math.min(pageCount.value, Math.max(1, Number.parseInt(route.query.page, 10) || 1)))
 const visibleResults = computed(() => filteredResults.value.slice((page.value - 1) * 10, page.value * 10))
-usePageMeta(computed(() => `${query.value || 'Browse'} — ${category.value} | Tome of Changes`), 'Browse and compare available SRD rules between D&D 5e 2014 and 2024.')
+const categoryLabel = computed(() => CATEGORIES[category.value]?.label || category.value)
+const singularLabel = computed(() => ({ MagicItem: 'magic item', Race: 'species' }[category.value] || category.value.toLowerCase()))
+// Describe the URL's results, rather than an unsubmitted edit in the search field.
+const searchTerm = computed(() => routeQuery().replace(/\s+/g, ' ').trim().slice(0, 100))
+const heading = computed(() => searchTerm.value
+  ? `${searchTerm.value}: D&D 2014 vs 2024`
+  : `D&D ${categoryLabel.value}: 2014 vs 2024`)
+const description = computed(() => searchTerm.value
+  ? `Compare available SRD ${singularLabel.value} results for ${searchTerm.value} between D&D 2014 and 2024. See highlighted text differences and stat changes.`
+  : `Browse and compare D&D ${categoryLabel.value.toLowerCase()} between the 2014 and 2024 editions. See available SRD text side by side with highlighted changes.`)
+const noindex = computed(() => (!browsing.value && !searchTerm.value)
+  || (browsing.value && !!searchTerm.value)
+  || Object.values(filters.value).some(value => value !== '' && value !== 'all'))
+usePageMeta(computed(() => `Tome Of Changes — ${heading.value}`), description, { noindex })
 let timer, syncing = false
 function submit() {
   clearTimeout(timer)
@@ -64,7 +87,7 @@ function submit() {
   else router.replace(target)
 }
 function retry() { return run(category.value, query.value, true, browsing.value) }
-function setPage(number) { router.replace({ query: { ...route.query, page: String(number) } }) }
+function pageLocation(number) { return { path: route.path, query: { ...route.query, page: number > 1 ? String(number) : undefined } } }
 function setFilter({ key, value }) { router.replace({ query: { ...route.query, [key]: value === '' || value === 'all' ? undefined : value, page: undefined } }) }
 function resetFilters() {
   const parameters = { ...route.query }

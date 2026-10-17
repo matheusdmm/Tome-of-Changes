@@ -1,6 +1,6 @@
 <template>
   <article class="max-w-3xl mx-auto space-y-6 text-parchment/90 leading-relaxed">
-    <h2 class="font-cinzel text-xl text-gold-bright">Privacy and data</h2>
+    <h1 class="font-cinzel text-xl text-gold-bright">Privacy and data</h1>
     <section class="space-y-3">
       <h3 class="font-cinzel text-gold-bright">Saved on this device</h3>
       <p>Favorites (including source snapshots), session notes, campaign or character collections, recently viewed entries, and theme preference are stored in this browser. The app does not upload that saved data or your notes. Tabs on the same origin share updates; when they edit the same saved data, the last write wins.</p>
@@ -39,7 +39,7 @@ import { useRecentlyViewed } from '../composables/useRecentlyViewed.js'
 import { useTheme } from '../composables/useTheme.js'
 import { useCollections } from '../composables/useCollections.js'
 useFavorites(); useNotes(); useRecentlyViewed(); useTheme(); useCollections()
-usePageMeta('Privacy and data | Tome of Changes', 'How Tome of Changes stores personal notes, uses external services, and deletes saved browser data.')
+usePageMeta('Tome Of Changes — Privacy and Data', 'How Tome Of Changes stores personal notes, uses external services, and deletes saved browser data.')
 const confirmDelete = ref(false), message = ref('')
 function deleteAllData() {
   const success = resetStoredData()

@@ -12,6 +12,8 @@ async function mount(component, props = {}, initial = '/') {
     { path: '/compare/:category/:query(.*)', name: 'compare', component: { template: '<div>Compare</div>' } },
     { path: '/favorites', name: 'favorites', component: { template: '<div>Favorites</div>' } },
     { path: '/privacy', name: 'privacy', component: { template: '<div>Privacy</div>' } },
+    { path: '/conditions', name: 'conditions', component: { template: '<div>Conditions</div>' } },
+    { path: '/browse/:category', name: 'browse', component: { template: '<div>Browse</div>' } },
   ] })
   await router.push(initial); await router.isReady()
   host = document.createElement('div'); document.body.append(host)

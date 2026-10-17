@@ -3,8 +3,8 @@
 
         <div class="text-center mb-10">
             <p class="font-cinzel text-[0.7rem] tracking-[0.2em] uppercase text-parchment/80 mb-3">✦ Edition Guide</p>
-            <h2 class="text-[clamp(1.4rem,3vw,2rem)] text-gold-bright mb-3"
-                :style="{ fontFamily: '\'Jim Nightshade\', cursive' }">What Changed in 2024?</h2>
+            <h1 class="text-[clamp(1.4rem,3vw,2rem)] text-gold-bright mb-3"
+                :style="{ fontFamily: '\'Jim Nightshade\', cursive' }">What Changed in D&amp;D 2024?</h1>
             <p class="text-parchment/80 text-base leading-relaxed max-w-xl mx-auto">
                 Selected notes about the published 2024 rules, with sources you can check. Use the comparison search for
                 the available SRD text; these notes are editorial guidance.
@@ -65,7 +65,7 @@ import { EDITION_GUIDE as sections } from '../data/editorial.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
 
 usePageMeta(
-    'What Changed in D&D 2024? | Tome of Changes',
+    'Tome Of Changes — What Changed in D&D 2024?',
     'Sourced notes about selected published 2024 D&D rules and SRD coverage.',
 )
 

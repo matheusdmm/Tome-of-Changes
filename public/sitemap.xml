@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.tomeofchanges.com/</loc></url>
   <url><loc>https://www.tomeofchanges.com/conditions</loc></url>
+  <url><loc>https://www.tomeofchanges.com/browse/Spell</loc></url>
+  <url><loc>https://www.tomeofchanges.com/browse/Feat</loc></url>
+  <url><loc>https://www.tomeofchanges.com/browse/Creature</loc></url>
+  <url><loc>https://www.tomeofchanges.com/browse/MagicItem</loc></url>
+  <url><loc>https://www.tomeofchanges.com/browse/Race</loc></url>
   <url><loc>https://www.tomeofchanges.com/whats-new</loc></url>
   <url><loc>https://www.tomeofchanges.com/privacy</loc></url>
   <url><loc>https://www.tomeofchanges.com/attribution</loc></url>

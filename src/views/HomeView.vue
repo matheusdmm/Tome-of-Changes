@@ -1,8 +1,14 @@
 <template>
   <div class="flex-1 flex flex-col justify-center">
+    <div class="text-center max-w-2xl mx-auto mb-6">
+      <h2 class="font-cinzel text-xl text-gold-bright mb-3">See what changed in D&amp;D 2024</h2>
+      <p class="text-parchment/80 leading-relaxed">Compare D&amp;D 5e 2014 vs 2024 spells, feats, creatures, conditions, magic items, and species. Read available SRD text side by side, with highlighted edits and stat changes.</p>
+      <p class="text-parchment/80 text-sm mt-2">Rules load from Open5e. Coverage is limited to the SRDs, rather than every entry in the published books.</p>
+    </div>
     <FactCard />
     <SearchBar v-model="query" v-model:category="category" @submit="submit" />
-    <RouterLink to="/browse/Spell" class="text-center text-parchment/90 underline">Browse without a name</RouterLink>
+    <p class="text-center text-sm text-parchment/80 mb-3">Browse comparisons by category</p>
+    <CategoryLinks />
     <div
       v-if="!query"
       class="text-center font-cinzel text-[0.7rem] text-parchment/80 tracking-[0.15em] uppercase mt-4"
@@ -27,12 +33,13 @@ import { ref, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import FactCard from '../components/FactCard.vue'
 import SearchBar from '../components/SearchBar.vue'
+import CategoryLinks from '../components/CategoryLinks.vue'
 import { usePageMeta } from '../composables/usePageMeta.js'
 import { useRecentlyViewed } from '../composables/useRecentlyViewed.js'
 
 usePageMeta(
-  'Tome of Changes — D&D 5e 2014 vs 2024',
-  'Compare D&D 5e spells, feats, creatures, conditions, magic items, and species between the 2014 and 2024 editions. Word-level diffs, stat comparisons, and instant search.',
+  'Tome Of Changes — See What Changed in D&D 2024',
+  'Compare D&D 5e 2014 vs 2024 spells, feats, creatures, conditions, magic items, and species. See highlighted text and stat changes in available SRD rules.',
 )
 
 const router   = useRouter()

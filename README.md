@@ -1,4 +1,4 @@
-# Tome of Changes
+# Tome Of Changes
 
 A browser app for comparing D&D 5e SRD rules from 2014 and 2024. Built with Vue 3, Vue Router, Vite 8, and Tailwind CSS 4.
 
@@ -60,6 +60,6 @@ Use Favorites to manage collections and download backups of the full library or 
 
 Rules data is provided by [Open5e](https://open5e.com/api-docs/). [SRD 5.1 and SRD 5.2](https://www.dndbeyond.com/srd) are available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Rules attribution is available at `/attribution`.
 
-The original code and design use [CC BY-NC 4.0](LICENSE). Tome of Changes is not affiliated with Wizards of the Coast or Dungeons & Dragons.
+The original code and design use [CC BY-NC 4.0](LICENSE). Tome Of Changes is not affiliated with Wizards of the Coast or Dungeons & Dragons.
 
 Created by [Matheus](https://matheusdmm.dev).

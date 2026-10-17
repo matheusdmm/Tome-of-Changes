@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-6">
-    <h2 class="font-cinzel text-xl text-gold-bright">Favorites and collections</h2>
+    <h1 class="font-cinzel text-xl text-gold-bright">Favorites and collections</h1>
     <BackupControls :collection-id="selectedId" />
     <section aria-label="Collections" class="border border-gold/30 p-4 space-y-4">
       <nav aria-label="Saved entry collections" class="flex flex-wrap gap-3">
@@ -55,7 +55,7 @@ import { useFavorites } from '../composables/useFavorites.js'
 import { useCollections } from '../composables/useCollections.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
 import { entryKey } from '../utils/entryIdentity.js'
-usePageMeta('Favorites and collections | Tome of Changes', 'Saved comparisons, collection checklists, notes, and backup tools.')
+usePageMeta('Tome Of Changes — Favorites and Collections', 'Saved comparisons, collection checklists, notes, and backup tools.')
 const route = useRoute(), router = useRouter(), id = useId()
 const { favorites } = useFavorites()
 const { collections, createCollection, renameCollection, deleteCollection, saveCollectionNote, setReviewed, entriesFor, toggleMembership } = useCollections()

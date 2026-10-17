@@ -3,7 +3,7 @@
 
     <!-- Header -->
     <div class="px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-gold/8 to-transparent border-b border-gold/20 flex flex-col gap-2">
-      <div class="font-cinzel text-base sm:text-[1.2rem] text-gold-bright font-semibold">{{ entry.name }}</div>
+      <h2 class="font-cinzel text-base sm:text-[1.2rem] text-gold-bright font-semibold"><RouterLink :to="comparisonPath(entry)" class="hover:underline">{{ entry.name }}</RouterLink></h2>
       <div class="flex items-center gap-2 flex-wrap">
         <div class="font-cinzel text-[0.65rem] tracking-[0.2em] uppercase py-[0.2rem] px-[0.7rem] border border-crimson text-crimson-light rounded-[1px] shrink-0">{{ CATEGORIES[entry.category]?.label || entry.category }}</div>
         <button

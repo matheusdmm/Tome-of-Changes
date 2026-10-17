@@ -14,6 +14,7 @@ async function mount(component, path = '/favorites', props = {}) {
   const dummy = { template: '<div />' }
   const router = createRouter({ history: createMemoryHistory(), routes: [
     { path: '/', name: 'home', component: dummy }, { path: '/favorites', name: 'favorites', component: dummy },
+    { path: '/conditions', name: 'conditions', component: dummy },
     { path: '/browse/:category', name: 'browse', component: dummy }, { path: '/compare/:category/:query(.*)', name: 'compare', component: dummy },
   ] })
   await router.push(path); await router.isReady()
@@ -132,7 +133,9 @@ describe('feature journeys', () => {
     expect(host.textContent).toContain('12 matches out of 13 loaded entries')
     expect(host.querySelector('select[aria-label="Spell school"]').value).toBe('Evocation')
     expect(host.querySelectorAll('[aria-label="Comparison reading mode"]')).toHaveLength(10)
-    button('Next').click(); await flush()
+    const next = [...host.querySelectorAll('a')].find(link => link.textContent.trim() === 'Next')
+    expect(next.getAttribute('href')).toBe('/browse/Spell?level=1&school=evocation&page=2')
+    next.click(); await flush()
     expect(router.currentRoute.value.query).toMatchObject({ level: '1', school: 'evocation', page: '2' })
     expect(host.querySelectorAll('[aria-label="Comparison reading mode"]')).toHaveLength(2)
     change(host.querySelector('select[aria-label="Spell level"]'), '2'); await flush()
