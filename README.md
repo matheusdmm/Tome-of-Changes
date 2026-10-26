@@ -39,8 +39,6 @@ Use Bun to manage dependencies and keep `bun.lock` committed. Run the tests and 
 
 ## Deployment
 
-For Vercel, use `bun run build` with `dist` as the output directory. Routing and cache settings are in `vercel.json`.
-
 To run with Docker and nginx:
 
 ```sh
@@ -49,6 +47,10 @@ docker run --rm -p 8080:80 tome-of-changes
 ```
 
 Open [localhost:8080](http://localhost:8080).
+
+The nginx configuration serves only the Vue routes and built static files. Unknown paths return HTTP 404 with `public/404.html`. Keep the route allowlist in `nginx.conf` in sync when adding Vue routes or categories. It also limits requests per client IP to 5 per second with a burst of 30, returning HTTP 429 above that limit. If nginx is behind a trusted reverse proxy, configure the real client IP before relying on its per-IP limit. This app has no login endpoint, so probes for `/wp-admin` are scans of nonexistent paths rather than password attempts against this app.
+
+`public/robots.txt` tells cooperative crawlers where they may crawl and points to the sitemap. It does not block requests or protect paths; enforce access and request limits at nginx or the upstream firewall.
 
 ## Saved data
 

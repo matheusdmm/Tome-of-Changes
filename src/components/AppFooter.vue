@@ -27,7 +27,7 @@
 
           <div class="flex flex-col gap-2.5">
             <p class="text-[10px] text-parchment/80 uppercase tracking-widest mb-1">Also by Matheus</p>
-            <a href="https://heroscribe.vercel.app/" target="_blank" rel="noopener" class="text-parchment/80 hover:text-gold transition-colors">HeroScribe</a>
+            <a href="https://persona.vazio.club/" target="_blank" rel="noopener noreferrer" class="text-parchment/80 hover:text-gold transition-colors">Persona</a>
             <a href="https://matheusdmm.dev" target="_blank" rel="noopener" class="text-parchment/80 hover:text-gold transition-colors">matheusdmm.dev</a>
           </div>
 

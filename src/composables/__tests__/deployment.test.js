@@ -6,6 +6,27 @@ import { createRouter, createMemoryHistory } from 'vue-router'
 import { routes, validateCategory } from '../../router/index.js'
 
 describe('routing and legacy deployment recovery', () => {
+  it('serves only known SPA paths through nginx and returns a plain 404 for probes', () => {
+    const config = readFileSync(resolve('nginx.conf'), 'utf8')
+    const routePatterns = [...config.matchAll(/location ~ (\^[^\r\n]+) \{/g)]
+      .map(([, source]) => new RegExp(source))
+    const matchesRoute = path => routePatterns.some(pattern => pattern.test(path))
+    for (const path of [
+      '/conditions', '/privacy', '/favorites', '/whats-new', '/attribution', '/browse',
+      '/browse/Spell', '/browse/Condition', '/browse/Feat', '/browse/Creature',
+      '/browse/MagicItem', '/browse/Race', '/compare/Spell/Counterspell',
+      '/compare/Spell/Entry%20One', '/compare/Spell/',
+    ]) expect(matchesRoute(path)).toBe(true)
+    for (const path of [
+      '/wp-admin/install.php', '/wp-login.php', '/unknown-page', '/browse/__proto__',
+      '/browse/Spell/extra', '/compare/constructor/Counterspell',
+    ]) expect(matchesRoute(path)).toBe(false)
+    expect(matchesRoute('/robots.txt')).toBe(true)
+    expect(config).toContain('location / { return 404; }')
+    expect(config).toContain('error_page 404 /404.html;')
+    expect(readFileSync(resolve('public/404.html'), 'utf8')).toContain('404 Not Found')
+  })
+
   it('restores browse deep links and rejects unsupported browse categories', async () => {
     const inert = routes.map(route => ({ ...route, component: { template: '<div />' } }))
     const router = createRouter({ history: createMemoryHistory(), routes: inert })
